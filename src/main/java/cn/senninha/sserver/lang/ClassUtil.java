@@ -40,7 +40,11 @@ public class ClassUtil {
 	 */
 	public static void scanPackage(String packageName, boolean noLimit, ClassFilter<?> filter) {
 		String classpath = System.getProperty("java.class.path");
-
+		
+		if(classpath.contains("tomcat-juli.jar")){//处理tomcat流氓改cp的问题
+			classpath = ClassUtil.class.getResource("/").toString();   
+		}
+		
 		String[] classpaths = null;
 		classpaths = classpath.split(File.pathSeparator);
 

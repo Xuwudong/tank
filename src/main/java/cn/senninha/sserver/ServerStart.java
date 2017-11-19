@@ -25,6 +25,8 @@ public class ServerStart {
 	private final int lengthAdjustment; // 从何处开始计算包长度，默认是从报文长度的下一个字节开始
 	private final int initialBytesToStrip; // 裁减包头
 	private final boolean failFast; // 快速失败。一旦到达maxFrameLength，马上抛出异常。
+	private EventLoopGroup bossGroup;
+	private EventLoopGroup workerGroup;
     
     public ServerStart(int port, int maxFrameLength, int lengthFieldOffset, int lengthFieldLength, int lengthAdjustment,
 			int initialBytesToStrip, boolean failFast) {
@@ -41,8 +43,8 @@ public class ServerStart {
 	}
     
     public void run() throws Exception {
-        EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        bossGroup = new NioEventLoopGroup(); // (1)
+        workerGroup = new NioEventLoopGroup();
         try {
             ServerBootstrap b = new ServerBootstrap(); // (2)
             b.group(bossGroup, workerGroup)
@@ -50,8 +52,8 @@ public class ServerStart {
              .childHandler(new ChannelInitializer<SocketChannel>() { // (4)
                  @Override
                  public void initChannel(SocketChannel ch) throws Exception {
-                     ch.pipeline().addLast(new DispatchHandler(1024, 1, 2
-                    		 , 0, 3, failFast));
+                     ch.pipeline().addLast(new DispatchHandler(maxFrameLength, lengthFieldOffset, lengthFieldLength
+                    		 , lengthAdjustment, initialBytesToStrip, failFast));
                  }
              })
              .option(ChannelOption.SO_BACKLOG, 128)          // (5)
