@@ -31,7 +31,15 @@ public class ByteBufUtil {
 	 * @return
 	 */
 	public static ByteBuf convert(ByteBuffer buffer){
-		byte[] src = buffer.array();
+		buffer.flip();
+		int length = buffer.limit();
+		byte[] src = new byte[3 + length];
+		src[0] = 0x68;
+		src[1] = (byte) ((length & 0xff_00) >> 8);
+		src[2] = (byte) ((length & 0x00_ff));
+		for(int i = 3; i < src.length; i++) {
+			src[i] = buffer.get();
+		}
 		ByteBuf buf = Unpooled.copiedBuffer(src);
 		return buf;
 	}

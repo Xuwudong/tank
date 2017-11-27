@@ -7,6 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cn.senninha.sserver.handler.EncodeHandler;
 import cn.senninha.sserver.lang.ClassFilter;
 import cn.senninha.sserver.lang.ClassUtil;
 import cn.senninha.sserver.lang.message.BaseMessage;
@@ -21,9 +25,10 @@ public class CodecFactory {
 	private Map<Integer, MessageWrapper> messageMap = new HashMap<Integer, MessageWrapper>();
 	@SuppressWarnings("rawtypes")
 	private Map<Class, Codec> codecMap = new HashMap<Class, Codec>();
-
+	
 	private static CodecFactory codecFactory;
 
+	private Logger logger = LoggerFactory.getLogger(EncodeHandler.class);
 	public static void main(String[] args) {
 
 	}
@@ -132,7 +137,14 @@ public class CodecFactory {
 	 */
 	public ByteBuffer encode(BaseMessage message){
 		ByteBuffer buf = ByteBuffer.allocate(1024);
-		int cmd = message.getCmd();
+		Message annotation = message.getClass().getAnnotation(Message.class);
+		int cmd = 0;
+		if(annotation != null) {
+			cmd = annotation.cmd();			
+		}else {
+			logger.error("必须发送被@Message注解过的协议" + message.getClass().getCanonicalName());
+			System.exit(-1);
+		}
 		buf.putInt(cmd);
 		MessageWrapper mw = messageMap.get(cmd);
 		

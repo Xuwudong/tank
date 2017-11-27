@@ -35,8 +35,7 @@ public class ClientContainer {
 		return container.containsKey(sessionId);
 	}
 	
-	public boolean remove(int sessionId){
-		container.remove(sessionId);
-		return true;
+	public Client remove(int sessionId){
+		return container.remove(sessionId);
 	}
 }
