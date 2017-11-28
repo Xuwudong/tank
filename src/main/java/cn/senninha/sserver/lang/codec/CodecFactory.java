@@ -35,14 +35,14 @@ public class CodecFactory {
 
 	private Logger logger = LoggerFactory.getLogger(EncodeHandler.class);
 	public static void main(String[] args) {
-		BaseMessage m = ResMapResourceMessage.valueOf();
-		ByteBuffer buffer = CodecFactory.getInstance().encode(m);
-		System.out.println(buffer);
-		buffer.flip();
-		ResMapResourceMessage m1 = (ResMapResourceMessage) CodecFactory.getInstance().decode(buffer);
-		System.out.println(m1.getList().size());
-		System.out.println(m1.toString().equals(m.toString()));
-		
+//		BaseMessage m = ResMapResourceMessage.valueOf();
+//		ByteBuffer buffer = CodecFactory.getInstance().encode(m);
+//		System.out.println(buffer);
+//		buffer.flip();
+//		ResMapResourceMessage m1 = (ResMapResourceMessage) CodecFactory.getInstance().decode(buffer);
+//		System.out.println(m1.getList().size());
+//		System.out.println(m1.toString().equals(m.toString()));
+//		
 		
 		
 	}

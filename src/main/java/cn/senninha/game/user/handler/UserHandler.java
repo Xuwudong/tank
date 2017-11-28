@@ -3,6 +3,7 @@ package cn.senninha.game.user.handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.senninha.game.map.manager.MapManager;
 import cn.senninha.game.user.UserManager;
 import cn.senninha.game.user.message.ReqHeartbeatMessge;
 import cn.senninha.game.user.message.ReqLoginMessage;
@@ -21,7 +22,9 @@ public class UserHandler {
 	@MessageInvoke(cmd = CmdConstant.LOGIN_REQ)
 	public void login(int sessionId, BaseMessage message) {
 		logger.error("用户 {} 尝试登陆", message.toString());
-		UserManager.getInstance().login(sessionId, (ReqLoginMessage) message);
+		UserManager.getInstance().login(sessionId, (ReqLoginMessage) message);	
+		
+		MapManager.getInstance().testEnterMap(ClientContainer.getInstance().getClient(sessionId));
 	}
 	
 	@MessageInvoke(cmd = CmdConstant.HEART_REQ)

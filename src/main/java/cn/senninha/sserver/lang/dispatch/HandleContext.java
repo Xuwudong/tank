@@ -5,6 +5,8 @@ import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
+import cn.senninha.game.map.Direction;
+import cn.senninha.game.map.manager.MapManager;
 import cn.senninha.sserver.ServerStart;
 import cn.senninha.sserver.client.Client;
 import cn.senninha.sserver.client.ClientContainer;
@@ -15,9 +17,25 @@ public class HandleContext {
 	private Processor[] processor;
 	
 	private HandleContext() {
+		init();
+	}
+	
+	/**
+	 * 初始化场景线程
+	 */
+	private void init() {
 		processor = new Processor[1];
 		processor[0] = new Processor("handle-thread-0");
 		processor[0].start();
+		
+		/** 初始化行走检测任务 **/
+		addCommand(0, new Task(Direction.INTERVEL.getDirection(), true, -1, TimeUnit.MILLISECONDS, new Runnable() {
+			
+			@Override
+			public void run() {
+				MapManager.getInstance().run();
+			}
+		}));
 	}
 	
 	public void dispatch(int sessionId, BaseMessage message) {
@@ -34,6 +52,14 @@ public class HandleContext {
 				}
 			}));
 		}
+	}
+	
+	/**
+	 * 
+	 * @param task
+	 */
+	private void addCommand(int line, Task task) {
+		processor[line].addCommand(task);
 	}
 	
 	public static HandleContext getInstance() {

@@ -1,49 +1,144 @@
 package cn.senninha.sserver.client;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cn.senninha.game.map.GridStatus;
 import cn.senninha.game.map.MapGround;
+import cn.senninha.game.map.Steps;
+import cn.senninha.game.map.manager.MapHelper;
 import cn.senninha.sserver.lang.message.BaseMessage;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
 
 /**
  * 客户端
+ * 
  * @author senninha on 2017年11月8日
  *
  */
 public class Client {
+	private Logger logger = LoggerFactory.getLogger(Client.class);
 	private int sessionId;
 	private String name;
 	private int line;
 	private ChannelHandlerContext ctx;
 	private MapGround mapGround;
-	
+	private List<Steps> steps = new LinkedList<>();
+	private int speed;
+	private int x;
+	private int y;
+
+	public int getX() {
+		return x;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	/**
+	 * 每10ms走过的像素！！！！
+	 * @return
+	 */
+	public int getSpeed() {
+		return speed;
+	}
+
+	/**
+	 * 每10ms走过的像素
+	 * @param speed
+	 */
+	public void setSpeed(int speed) {
+		this.speed = speed;
+	}
+
 	public int getSessionId() {
 		return sessionId;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setSessionId(int sessionId) {
 		this.sessionId = sessionId;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public int getLine() {
 		return line;
 	}
+
 	public void setLine(int line) {
 		this.line = line;
 	}
+
 	public void pushMessage(BaseMessage message) {
 		ctx.writeAndFlush(message);
 	}
+
 	public void setSessionInCtx(int sessionId) {
 		ctx.channel().attr(AttributeKey.valueOf("sessionId")).set(sessionId);
 	}
-	
+
+	public void clearAllSteps() {
+		if (mapGround == null) {
+			steps.clear();
+		}
+	}
+
 	/**
-	 * 进入地图
+	 * 用这个方法表示还在战斗地图中
+	 * @return
+	 */
+	public MapGround getMapGround() {
+		return mapGround;
+	}
+
+	public void setMapGround(MapGround mapGround) {
+		this.mapGround = mapGround;
+	}
+
+	/**
+	 * 
+	 * @return 没有步子的时候返回null
+	 */
+	public Steps getHeadStepButNotRemove() {
+		if (steps.size() == 0) {
+			return null;
+		}
+		return steps.get(0);
+	}
+
+	public void addSteps(Steps step) {
+		steps.add(step);
+	}
+
+	public void removeHeadSteps() {
+		if (steps.size() == 0) {
+			return;
+		}
+		steps.remove(0);
+	}
+
+	/**
+	 * 进入地图,不会更新地图
+	 * 
 	 * @param mapGround
 	 * @return
 	 */
@@ -54,7 +149,37 @@ public class Client {
 	}
 	
 	/**
+	 * 更新位置，同时会更新到对应的地图里
+	 * @param x 像素
+	 * @param y
+	 */
+	public boolean updateLocation(int x, int y) {
+		
+		int gridIndex = MapHelper.convertPixelToGridIndex(x, y);
+		int currentGridIndex = MapHelper.convertPixelToGridIndex(this.x, this.y);
+		
+		if(mapGround.getBlocks().get(gridIndex).getStatus() == GridStatus.CAN_RUN.getStatus()
+				|| currentGridIndex == gridIndex) {	//判断是否可一站立,移动后未改变格子也要考虑
+			//先更新client的位置
+			this.x = x;
+			this.y = y;
+			
+			//去除占据格子
+			mapGround.getBlocks().get(currentGridIndex).setStatus(GridStatus.CAN_RUN.getStatus());
+			//然后占据这个格子
+			mapGround.getBlocks().get(gridIndex).setStatus(GridStatus.HAS_PLAYER.getStatus());
+			logger.error("玩家{}进入地图成功", this);
+			return true;
+		}else {
+			logger.error("玩家{}进入地图失败", this);
+			return false;
+		}
+		
+	}
+
+	/**
 	 * 离开地图
+	 * 
 	 * @return
 	 */
 	public boolean exitMap() {
@@ -70,17 +195,11 @@ public class Client {
 		this.ctx = ctx;
 		this.line = -1;
 	}
+
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Client [sessionId=");
-		builder.append(sessionId);
-		builder.append(", name=");
-		builder.append(name);
-		builder.append("]");
-		return builder.toString();
+		return "Client [sessionId=" + sessionId + ", name=" + name + ", line=" + line + ", ctx=" + ctx + ", mapGround="
+				+ mapGround + ", steps=" + steps + ", speed=" + speed + ", x=" + x + ", y=" + y + "]";
 	}
-	
-	
-	
+
 }

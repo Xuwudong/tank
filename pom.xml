@@ -2,12 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>cn.senninha</groupId>
-	<artifactId>sserver</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>sserver</name>
+	<name>tankserver</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -37,4 +35,6 @@
 			<version>${slf4j.version}</version>
 		</dependency>
 	</dependencies>
+	<groupId>com.senninha</groupId>
+	<artifactId>tankserver</artifactId>
 </project>

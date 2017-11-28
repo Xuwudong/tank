@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import cn.senninha.sserver.handler.DispatchHandler;
 import cn.senninha.sserver.handler.EncodeHandler;
 import cn.senninha.sserver.lang.codec.CodecFactory;
+import cn.senninha.sserver.lang.dispatch.HandleContext;
 import cn.senninha.sserver.lang.dispatch.HandlerFactory;
 import io.netty.bootstrap.ServerBootstrap;
-
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -92,8 +92,13 @@ public class ServerStart {
 	private void init() {
 		/** 初始化分发以及编解码工具 **/
 		CodecFactory.getInstance();
-		HandlerFactory.getInstance();
 		logger.error("初始化编解码工具成功");
+		
+		HandlerFactory.getInstance();
+		logger.error("初始化分发工厂成功");
+		
+		HandleContext.getInstance();
+		logger.error("初始化场景线程成功");
 	}
 
 	public static void main(String[] args) throws Exception {

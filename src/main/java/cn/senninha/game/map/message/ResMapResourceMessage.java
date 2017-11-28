@@ -3,7 +3,7 @@ package cn.senninha.game.map.message;
 import java.util.List;
 
 import cn.senninha.game.map.Grid;
-import cn.senninha.game.map.MapResource;
+import cn.senninha.game.map.manager.MapHelper;
 import cn.senninha.sserver.CmdConstant;
 import cn.senninha.sserver.lang.message.BaseMessage;
 import cn.senninha.sserver.lang.message.Message;
@@ -13,10 +13,10 @@ public class ResMapResourceMessage extends BaseMessage{
 	private long mapId;
 	private List<Grid> list;
 	
-	public static ResMapResourceMessage valueOf() {
+	public static ResMapResourceMessage valueOf(List<Grid> list) {
 		ResMapResourceMessage m = new ResMapResourceMessage();
 		m.mapId = System.currentTimeMillis();
-		m.list = MapResource.generateGridRandom();
+		m.list = list;
 		return m;
 	}
 	

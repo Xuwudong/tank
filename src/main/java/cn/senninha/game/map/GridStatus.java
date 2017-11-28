@@ -7,22 +7,25 @@ package cn.senninha.game.map;
  */
 public enum GridStatus {
 	/** 可走 **/
-	CAN_RUN(0),
+	CAN_RUN((byte)0),
 	
 	/** 可以击穿 **/
-	CAN_SHOT(1),
+	CAN_SHOT((byte)1),
 	
 	/**不可击穿 **/
-	CAN_NOT_SHOT(2);
+	CAN_NOT_SHOT((byte)2),
+	
+	/** 有人在这个格子 **/
+	HAS_PLAYER((byte)3);
 	
 	
 
-	private int status;	
-	private GridStatus(int status) {
+	private byte status;	
+	private GridStatus(byte status) {
 		this.status = status;
 	}
 	
-	public int getStatus() {
+	public byte getStatus() {
 		return status;
 	}
 }

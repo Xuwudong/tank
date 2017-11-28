@@ -5,7 +5,9 @@ public interface CmdConstant {
 	/** 登陆 **/
 	public static final int LOGIN_REQ = 1001;			
 	/** 心跳 **/
-	public static final int HEART_REQ = 1002;			
+	public static final int HEART_REQ = 1002;		
+	/** 请求走动 **/
+	public static final int RUN_REQ   = 1003;
 	
 	/**------------------------------------------------------------------**/
 	
@@ -16,6 +18,8 @@ public interface CmdConstant {
 	public static final int HEART_RES = 2002;	
 	/** 发送地图信息 **/
 	public static final int MAP_RESOURCE_RES = 2003;
+	/** 走动结果 **/
+	public static final int RUN_RES = 2004;
 	
 	
 	

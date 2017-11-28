@@ -3,7 +3,10 @@ package cn.senninha.sserver.handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.senninha.game.user.UserManager;
+import cn.senninha.game.user.message.ReqHeartbeatMessge;
 import cn.senninha.game.user.message.ReqLoginMessage;
+import cn.senninha.game.user.message.ResHeartbeatMessge;
 import cn.senninha.sserver.CmdConstant;
 import cn.senninha.sserver.client.Client;
 import cn.senninha.sserver.client.ClientContainer;
@@ -54,6 +57,10 @@ public class DispatchHandler extends LengthFieldBasedFrameDecoder {
 						return null;
 					}
 				}
+				if(message instanceof ReqHeartbeatMessge) {
+					sendHeartbeat(message, sessionId);
+					return null;
+				}
 				HandleContext.getInstance().dispatch(sessionId, message);
 			}
 		}
@@ -99,6 +106,16 @@ public class DispatchHandler extends LengthFieldBasedFrameDecoder {
 		}
 		ctx.disconnect();
 		logger.error("心跳超时掉线：{}", sessionId);
+	}
+	
+	private void sendHeartbeat(BaseMessage message, int sessionId) {
+		ReqHeartbeatMessge m = (ReqHeartbeatMessge) message;
+		ResHeartbeatMessge res = new ResHeartbeatMessge(m);
+		Client client = ClientContainer.getInstance().getClient(sessionId);
+		logger.error("收到心跳：{}", m.getTime());
+		if(client != null) {
+			client.pushMessage(res);
+		}
 	}
 
 }

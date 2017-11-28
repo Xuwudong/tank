@@ -11,7 +11,7 @@ public class MapGround {
 	private List<Grid> blocks;
 	private Map<Integer, Client> clientInMap;
 	
-	public MapGround(int mapId, List<Grid> blocks) {
+	public MapGround(long mapId, List<Grid> blocks) {
 		super();
 		this.mapId = mapId;
 		this.blocks = blocks;

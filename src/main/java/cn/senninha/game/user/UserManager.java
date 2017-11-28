@@ -34,6 +34,7 @@ public class UserManager {
 		//假装登陆成功
 		client.setSessionInCtx(sessionId);
 		client.pushMessage(ResLoginMessage.valueOf((byte)1));
+		client.setSpeed(1);
 		
 		logger.error("登陆成功:{}", m.getUsername());
 	}
