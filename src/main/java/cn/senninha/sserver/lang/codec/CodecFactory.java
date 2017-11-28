@@ -10,11 +10,15 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.senninha.game.map.MapGround;
+import cn.senninha.game.map.message.ResMapResourceMessage;
 import cn.senninha.sserver.handler.EncodeHandler;
 import cn.senninha.sserver.lang.ClassFilter;
 import cn.senninha.sserver.lang.ClassUtil;
+import cn.senninha.sserver.lang.codec.impl.WrapperCodec;
 import cn.senninha.sserver.lang.message.BaseMessage;
 import cn.senninha.sserver.lang.message.Message;
+import cn.senninha.sserver.lang.message.MessageWrapperAnnotation;
 
 /**
  * 使用编解码工厂来自动化封装协议
@@ -25,12 +29,22 @@ public class CodecFactory {
 	private Map<Integer, MessageWrapper> messageMap = new HashMap<Integer, MessageWrapper>();
 	@SuppressWarnings("rawtypes")
 	private Map<Class, Codec> codecMap = new HashMap<Class, Codec>();
+	private Codec codecWrapper;
 	
 	private static CodecFactory codecFactory;
 
 	private Logger logger = LoggerFactory.getLogger(EncodeHandler.class);
 	public static void main(String[] args) {
-
+		BaseMessage m = ResMapResourceMessage.valueOf();
+		ByteBuffer buffer = CodecFactory.getInstance().encode(m);
+		System.out.println(buffer);
+		buffer.flip();
+		ResMapResourceMessage m1 = (ResMapResourceMessage) CodecFactory.getInstance().decode(buffer);
+		System.out.println(m1.getList().size());
+		System.out.println(m1.toString().equals(m.toString()));
+		
+		
+		
 	}
 
 	public static CodecFactory getInstance() {
@@ -89,13 +103,33 @@ public class CodecFactory {
 					List<Codec> list = new ArrayList<Codec>(fields.length);
 					for(Field field : fields){
 						Class<?> clazzType = field.getType();
-						list.add(codecMap.get(clazzType));
+						Codec codec = codecMap.get(clazzType);
+						if(codec == null) {
+							codec = codecMap.get(WrapperCodec.class);
+						}
+						list.add(codec);
 					}
 					MessageWrapper mw = new MessageWrapper();
 					mw.clazz = clazz;
 					mw.list = list;
 					mw.fields = fields;
 					messageMap.put(protocol, mw);
+				}
+
+				MessageWrapperAnnotation wrapper = clazz.getAnnotation(MessageWrapperAnnotation.class);
+				if(wrapper != null) {			//扫描通信协议里的封装
+					Field[] fields = clazz.getDeclaredFields();
+					List<Codec> list = new ArrayList<Codec>(fields.length);
+					for(Field field : fields){
+						Class<?> clazzType = field.getType();
+						list.add(codecMap.get(clazzType));
+					}
+					MessageWrapper mw = new MessageWrapper();
+					mw.clazz = clazz;
+					mw.list = list;
+					mw.fields = fields;
+					mw.cmd = wrapper.cmd();
+					messageMap.put(mw.cmd, mw);
 				}
 				return false;
 			}
@@ -136,7 +170,7 @@ public class CodecFactory {
 	 * @return
 	 */
 	public ByteBuffer encode(BaseMessage message){
-		ByteBuffer buf = ByteBuffer.allocate(1024);
+		ByteBuffer buf = ByteBuffer.allocate(1024 * 16);
 		Message annotation = message.getClass().getAnnotation(Message.class);
 		int cmd = 0;
 		if(annotation != null) {
@@ -154,9 +188,33 @@ public class CodecFactory {
 		return buf;
 	}
 	
-	private class MessageWrapper{
-		List<Codec> list;
-		Field[] fields;
-		Class<Message> clazz;
+	
+	
+	@SuppressWarnings("rawtypes")
+	public Map<Class, Codec> getCodecMap() {
+		return codecMap;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public void setCodecMap(Map<Class, Codec> codecMap) {
+		this.codecMap = codecMap;
+	}
+	
+	/**
+	 * 获取协议内部封装类的处理方法
+	 * @param clazz
+	 * @return
+	 */
+	public MessageWrapper getMessageWrapper(int cmd) {
+		return messageMap.get(cmd);
+	}
+
+
+
+	public class MessageWrapper{
+		public List<Codec> list;
+		public Field[] fields;
+		public Class<Message> clazz;
+		public int cmd; //补锅，作为Message内部包装类的标记
 	}
 }

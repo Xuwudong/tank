@@ -98,6 +98,6 @@ public class ServerStart {
 
 	public static void main(String[] args) throws Exception {
 
-		new ServerStart(9527, 1024, 1, 2, 0, 3, true).run();
+		new ServerStart(9527, 1024 * 16, 1, 2, 0, 3, true).run();
 	}
 }
