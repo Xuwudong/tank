@@ -5,6 +5,7 @@ import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
+import cn.senninha.game.GameStatus;
 import cn.senninha.game.map.Direction;
 import cn.senninha.game.map.manager.MapManager;
 import cn.senninha.sserver.ServerStart;
@@ -29,11 +30,20 @@ public class HandleContext {
 		processor[0].start();
 		
 		/** 初始化行走检测任务 **/
-		addCommand(0, new Task(Direction.INTERVEL.getDirection(), true, -1, TimeUnit.MILLISECONDS, new Runnable() {
+		addCommand(0, new Task(GameStatus.GAME_RUN_CHECK_INTERVEL.getValue(), true, -1, TimeUnit.MILLISECONDS, new Runnable() {
 			
 			@Override
 			public void run() {
 				MapManager.getInstance().run();
+			}
+		}));
+		
+		/** 注册子弹检测任务 **/
+		addCommand(0, new Task(GameStatus.GAME_BULLETS_CHECK_INTERVEL.getValue(), true, -1, TimeUnit.MILLISECONDS, new Runnable() {
+			
+			@Override
+			public void run() {
+				MapManager.getInstance().checkBullets();
 			}
 		}));
 	}

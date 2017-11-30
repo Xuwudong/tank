@@ -8,6 +8,9 @@ public interface CmdConstant {
 	public static final int HEART_REQ = 1002;		
 	/** 请求走动 **/
 	public static final int RUN_REQ   = 1003;
+	/** 请求射击 **/
+	public static final int REQ_SHELLS = 1004;
+	
 	
 	/**------------------------------------------------------------------**/
 	

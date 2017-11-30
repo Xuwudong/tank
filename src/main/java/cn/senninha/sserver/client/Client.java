@@ -31,6 +31,8 @@ public class Client {
 	private int speed;
 	private int x;
 	private int y;
+	private long fireTime;
+	private int fireIntervel;
 
 	public int getX() {
 		return x;
@@ -135,6 +137,38 @@ public class Client {
 		}
 		steps.remove(0);
 	}
+	
+	/**
+	 * 获取开火时间
+	 * @return
+	 */
+	public long getFireTime() {
+		return fireTime;
+	}
+
+	/**
+	 * 设置开火时间
+	 * @param fireTime
+	 */
+	public void setFireTime(long fireTime) {
+		this.fireTime = fireTime;
+	}
+
+	/**
+	 * 设置开火间隔
+	 * @return
+	 */
+	public int getFireIntervel() {
+		return fireIntervel;
+	}
+
+	/**
+	 * 设置开火间隔
+	 * @param fireIntervel
+	 */
+	public void setFireIntervel(int fireIntervel) {
+		this.fireIntervel = fireIntervel;
+	}
 
 	/**
 	 * 进入地图,不会更新地图
@@ -202,8 +236,9 @@ public class Client {
 
 	@Override
 	public String toString() {
-		return "Client [sessionId=" + sessionId + ", name=" + name + ", line=" + line + ", ctx=" + ctx + ", mapGround="
-				+ mapGround + ", steps=" + steps + ", speed=" + speed + ", x=" + x + ", y=" + y + "]";
+		return "Client [logger=" + logger + ", sessionId=" + sessionId + ", name=" + name + ", line=" + line + ", ctx="
+				+ ctx + ", mapGround=" + mapGround + ", steps=" + steps + ", speed=" + speed + ", x=" + x + ", y=" + y
+				+ ", fireTime=" + fireTime + ", fireIntervel=" + fireIntervel + "]";
 	}
 
 }

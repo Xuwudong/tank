@@ -13,10 +13,7 @@ public enum Direction {
 	WEST((byte)3),
 	
 	/** 单次请求最大步长 **/
-	MAX_GRID_STEP((byte)2),
-	
-    /** 行走检测的间隔时间 **/
-	INTERVEL((byte) 100);
+	MAX_GRID_STEP((byte)2);
 	
 	
 	

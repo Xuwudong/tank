@@ -2,7 +2,6 @@ package cn.senninha.game.map.manager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import cn.senninha.game.map.Direction;
 import cn.senninha.game.map.Grid;
@@ -25,7 +24,6 @@ public class MapHelper {
 	public static final int TOTAL_GRIDS = WIDTH_GRIDS * HEIGHT_GRIDS;
 
 	public static final int PER_GRID_PIXEL = 40; // 每个格子的像素
-	private static Random r = new Random();
 
 	public static List<Grid> generateGridRandom() {
 		List<Grid> list = new ArrayList<Grid>(TOTAL_GRIDS);
@@ -136,5 +134,21 @@ public class MapHelper {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * 判断是否可以射击
+	 * @param client
+	 * @return
+	 */
+	public static boolean validateCanFire(Client client){
+		long current = System.currentTimeMillis();
+		long interval = current - client.getFireTime();
+		if(interval > client.getFireIntervel()){
+			//重新设置开火时间
+			client.setFireTime(current);
+			return true;
+		}
+		return false;
 	}
 }

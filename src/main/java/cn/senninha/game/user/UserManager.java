@@ -3,6 +3,7 @@ package cn.senninha.game.user;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.senninha.game.GameStatus;
 import cn.senninha.game.user.message.ReqLoginMessage;
 import cn.senninha.game.user.message.ResLoginMessage;
 import cn.senninha.sserver.client.Client;
@@ -34,7 +35,7 @@ public class UserManager {
 		//假装登陆成功
 		client.setSessionInCtx(sessionId);
 		client.pushMessage(ResLoginMessage.valueOf((byte)1));
-		client.setSpeed(1);
+		client.setSpeed(GameStatus.GAME_COMMON_TANK_SPEED.getValue());
 		
 		logger.error("登陆成功:{}", m.getUsername());
 	}

@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.senninha.game.map.BulletsObject;
 import cn.senninha.game.map.MapGround;
 import cn.senninha.game.map.message.ResMapResourceMessage;
 import cn.senninha.sserver.client.Client;
@@ -50,6 +51,18 @@ public class MapManager {
 	}
 	
 	/**
+	 * 检测子弹信息
+	 */
+	public void checkBullets(){
+		Collection<MapGround> collection = map.values();
+		for(MapGround ground : collection){
+			for(BulletsObject bullet : ground.getBulletsMap().values()){
+				validateBullet(bullet);
+			}
+		}
+	}
+	
+	/**
 	 * 校验移动并推送给对应的客户端
 	 * @param client
 	 */
@@ -64,6 +77,16 @@ public class MapManager {
 			}
 			logger.error("推送{}跑动信息完毕", client.getName());
 		}
+	}
+	
+	/**
+	 * 校验子弹并且推送信息给移动端
+	 * @param bullet
+	 */
+	private void validateBullet(BulletsObject bullet){
+		logger.error("去除子弹，子弹的位置:{}", bullet);
+		bullet.getMapGround().getBulletsMap().remove(bullet.getId());
+		bullet.setMapGround(null);
 	}
 	
 	/**

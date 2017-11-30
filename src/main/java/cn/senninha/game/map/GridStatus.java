@@ -16,7 +16,34 @@ public enum GridStatus {
 	CAN_NOT_SHOT((byte)2),
 	
 	/** 有人在这个格子 **/
-	HAS_PLAYER((byte)3);
+	HAS_PLAYER((byte)3),
+	
+	/**坦克，自己 向上 **/
+	SELF_TANK_UP((byte)4),
+	
+	/** 坦克，自己，向右**/
+	SELF_TANK_RIGHT((byte)5),
+	
+	/**坦克，自己 向下**/
+	SELF_TANK_DOWN((byte)6),
+	
+	/**坦克，自己，向左 **/
+	SELF_TANK_LEFT((byte)7),
+	
+	/**坦克，别人 向上 **/
+	OTHER_TANK_UP((byte)8),
+	
+	/** 坦克，别人，向右**/
+	OTHER_TANK_RIGHT((byte)9),
+	
+	/**坦克，别人 向下**/
+	OTHER_TANK_DOWN((byte)10),
+	
+	/**坦克，别人，向左 **/
+	OTHER_TANK_LEFT((byte)11),
+	
+	/** 炮弹 **/
+	SHELLS((byte)12);
 	
 	
 
