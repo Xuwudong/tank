@@ -104,11 +104,16 @@ class Processor extends Thread {
 				Task task = queue.take();
 				Runnable r = task.getRunnable();
 				if (r != null) {
-					r.run();
+					try {
+						r.run();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					if (task.isNeedRepeat() && task.getRepeatTime() != 1) {
 						task.correctTime(); // 修正执行时间
 						addCommand(task);
 					}
+					
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();

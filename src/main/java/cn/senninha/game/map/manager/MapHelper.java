@@ -20,17 +20,26 @@ import cn.senninha.sserver.client.Client;
  */
 public class MapHelper {
 
-	public static final int WIDTH_GRIDS = 30; // x方向的格子数
-	public static final int HEIGHT_GRIDS = 30;
+	public static final int WIDTH_GRIDS = 20; // x方向的格子数
+	public static final int HEIGHT_GRIDS = 15;
 	public static final int TOTAL_GRIDS = WIDTH_GRIDS * HEIGHT_GRIDS;
 
-	public static final int PER_GRID_PIXEL = 10; // 每个格子的像素
+	public static final int PER_GRID_PIXEL = 40; // 每个格子的像素
 	private static Random r = new Random();
 
 	public static List<Grid> generateGridRandom() {
 		List<Grid> list = new ArrayList<Grid>(TOTAL_GRIDS);
 		for (int i = 0; i < TOTAL_GRIDS; i++) {
-			list.add(new Grid((byte) (i % WIDTH_GRIDS), (byte) (i / WIDTH_GRIDS), (byte) (r.nextInt(3))));
+			if (i % 5 == 0) {
+				list.add(new Grid((byte) (i % WIDTH_GRIDS), (byte) (i / WIDTH_GRIDS),
+						(byte) (GridStatus.CAN_NOT_SHOT.getStatus())));
+				if(i == 10 || i == 20 || i == 30 || i == 40 || i == 5){
+					list.get(i).setStatus(GridStatus.CAN_RUN.getStatus());
+				}
+			} else {
+				list.add(new Grid((byte) (i % WIDTH_GRIDS), (byte) (i / WIDTH_GRIDS),
+						(byte) (GridStatus.CAN_RUN.getStatus())));
+			}
 		}
 		return list;
 	}
@@ -51,7 +60,7 @@ public class MapHelper {
 		long current = System.currentTimeMillis();
 		long intervel = current - step.getGenerateTime();
 
-		int hasRun = (int) (intervel / 10 * client.getSpeed()); // 已经走过的像素
+		int hasRun = (int) (intervel / 5 * client.getSpeed()); // 已经走过的像素
 		hasRun = hasRun > step.getStep() ? step.getStep() : hasRun;	//如果太大取小的值
 		int x = client.getX();
 		int y = client.getY();
@@ -78,7 +87,7 @@ public class MapHelper {
 				step.setStep((byte)hasRun);
 				step.setGenerateTime(current);
 			}
-			return new ResRunResultMessage(x, y, client.getSessionId());
+			return new ResRunResultMessage(x, y, client.getSessionId(), status);
 		}else {	//如果不能走动，直接返回false，并且移除这个走动
 			client.removeHeadSteps();
 			return null;
@@ -96,8 +105,8 @@ public class MapHelper {
 	public static int convertPixelToGridIndex(int x, int y) {
 		x = x / MapHelper.PER_GRID_PIXEL;
 		y = y / MapHelper.PER_GRID_PIXEL;
-
-		return y * MapHelper.HEIGHT_GRIDS + x;
+		
+		return y * MapHelper.WIDTH_GRIDS + x;
 	}
 
 	/**
@@ -108,8 +117,8 @@ public class MapHelper {
 	 * @return
 	 */
 	private static boolean canRun(Client client, int x, int y) {
-		if(x < 0 || x > WIDTH_GRIDS * PER_GRID_PIXEL
-				|| y < 0 || y > HEIGHT_GRIDS * PER_GRID_PIXEL) {//超过了格子，直接干掉
+		if(x < 0 || x >= WIDTH_GRIDS * PER_GRID_PIXEL
+				|| y < 0 || y >= HEIGHT_GRIDS * PER_GRID_PIXEL) {//超过了格子，直接干掉,防止出现越界～
 			return false;
 		}
 		return client.updateLocation(x, y);

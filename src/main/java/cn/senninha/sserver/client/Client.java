@@ -158,6 +158,10 @@ public class Client {
 		int gridIndex = MapHelper.convertPixelToGridIndex(x, y);
 		int currentGridIndex = MapHelper.convertPixelToGridIndex(this.x, this.y);
 		
+//		if(gridIndex > MapHelper.TOTAL_GRIDS){
+//			return false;
+//		}
+		
 		if(mapGround.getBlocks().get(gridIndex).getStatus() == GridStatus.CAN_RUN.getStatus()
 				|| currentGridIndex == gridIndex) {	//判断是否可一站立,移动后未改变格子也要考虑
 			//先更新client的位置
