@@ -8,6 +8,7 @@ import cn.senninha.game.map.Grid;
 import cn.senninha.game.map.GridStatus;
 import cn.senninha.game.map.MapGround;
 import cn.senninha.game.map.Steps;
+import cn.senninha.game.map.message.ReqShellsMessage;
 import cn.senninha.game.map.message.ResRunResultMessage;
 import cn.senninha.sserver.client.Client;
 
@@ -104,7 +105,52 @@ public class MapHelper {
 		x = x / MapHelper.PER_GRID_PIXEL;
 		y = y / MapHelper.PER_GRID_PIXEL;
 		
+		int[] xy = correctXY(x, y);
+		x = xy[0]; y = xy[1];
+		
 		return y * MapHelper.WIDTH_GRIDS + x;
+	}
+	
+	public static int[] convertGridIndexToPixel(int gridIndex) {
+		int[] xy = new int[2];
+		xy[0] = gridIndex % WIDTH_GRIDS * PER_GRID_PIXEL;
+		xy[1] = gridIndex / WIDTH_GRIDS * PER_GRID_PIXEL;
+		return xy;
+	}
+	
+	/**
+	 * 修正xy，超过最大像素边界的问题，回复成不越界的值
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public static int[] correctXY(int x, int y){		
+		if(x < 0) {
+			x = 0;
+		}else if(x >= PER_GRID_PIXEL * WIDTH_GRIDS) {
+			x = PER_GRID_PIXEL * WIDTH_GRIDS - 1;
+		}
+		
+		if(y < 0) {
+			y = 0;
+		}else if(y >= PER_GRID_PIXEL * HEIGHT_GRIDS) {
+			y = PER_GRID_PIXEL * HEIGHT_GRIDS - 1;
+		}
+		
+		return new int[]{x, y};
+	}
+	
+	/**
+	 * x,y值是否越界
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public static boolean needCorrect(int x ,int y) {
+		if(x < 0 || y < 0 || x >= PER_GRID_PIXEL * WIDTH_GRIDS || y >= PER_GRID_PIXEL * HEIGHT_GRIDS) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -150,5 +196,51 @@ public class MapHelper {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * 校正射击的源点，直接把它弄到下一个位置
+	 * @param req
+	 * @return 返回false的话，说明这次射击直接废弃即可
+	 */
+	public static boolean corrcetFireSource(ReqShellsMessage req) {
+		int x = req.getX();
+		int y = req.getY();
+		int direction = req.getDirection();
+		int index = convertPixelToGridIndex(x, y);
+		
+		if(direction == Direction.NORTH.getDirection()) {//北边
+			if(index <= WIDTH_GRIDS) {
+				return false;
+			}
+			int leave = y % PER_GRID_PIXEL;
+			y = y - leave - 1;
+		}else if(direction == Direction.EAST.getDirection()) {//右边
+			if(index % WIDTH_GRIDS == WIDTH_GRIDS - 1) {
+				return false;
+			}
+			int leave = x % PER_GRID_PIXEL;
+			x = x + PER_GRID_PIXEL - leave;
+		}else if(direction == Direction.SOUTH.getDirection()) {//下边
+			if(index >= WIDTH_GRIDS * (HEIGHT_GRIDS - 1)) {
+				return false;
+			}
+			int leave = y % PER_GRID_PIXEL;
+			y = y + PER_GRID_PIXEL - leave;
+		}else if(direction == Direction.WEST.getDirection()) {//右边
+			if(index % WIDTH_GRIDS == 0) {
+				return false;
+			}
+			int leave = x % PER_GRID_PIXEL;
+			x = x - leave + 1;
+		}
+		req.setX(x);
+		req.setY(y);
+		return true;
+	}
+	
+	public static void main(String[] args) {
+		int gridIndex = 20;
+		System.out.println(convertPixelToGridIndex(convertGridIndexToPixel(gridIndex)[0], convertGridIndexToPixel(gridIndex)[1]));
 	}
 }

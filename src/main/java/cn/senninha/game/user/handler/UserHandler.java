@@ -24,7 +24,7 @@ public class UserHandler {
 		logger.error("用户 {} 尝试登陆", message.toString());
 		UserManager.getInstance().login(sessionId, (ReqLoginMessage) message);	
 		
-		MapManager.getInstance().testEnterMap(ClientContainer.getInstance().getClient(sessionId));
+//		MapManager.getInstance().testEnterMap(ClientContainer.getInstance().getClient(sessionId));
 	}
 	
 	@MessageInvoke(cmd = CmdConstant.HEART_REQ)

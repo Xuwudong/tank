@@ -34,13 +34,17 @@ public class MapHandler {
 		if(client == null){
 			return;
 		}
-		ReqShellsMessage res = (ReqShellsMessage) message;
+		ReqShellsMessage req = (ReqShellsMessage) message;
 		boolean canShot = MapHelper.validateCanFire(client);
 		if(canShot){
 			MapGround ground = client.getMapGround();
 			if(ground != null){
-				ground.addBullets(res, GameStatus.GAME_COMMON_BULLET_SPEED.getValue());
-				logger.debug("射击成功：{}", client.getName());
+				if(!MapHelper.corrcetFireSource(req)) {
+					logger.error("射击源未校验通过", req);
+				}else {
+					ground.addBullets(req, GameStatus.GAME_COMMON_BULLET_SPEED.getValue());
+					logger.debug("射击成功：{}", client.getName());
+				}
 			}else{
 				logger.error("不处于战斗中，无法射击：{}", client.getName());
 			}

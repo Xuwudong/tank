@@ -50,6 +50,14 @@ public class MapGround {
 	}
 	
 	/**
+	 * 移除地图中的子弹
+	 * @param id
+	 */
+	public void removeBullet(int id) {
+		bulletsMap.remove(id);
+	}
+	
+	/**
 	 * 添加子弹进地图
 	 * @return
 	 */

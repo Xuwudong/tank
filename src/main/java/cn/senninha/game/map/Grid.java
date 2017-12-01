@@ -13,6 +13,7 @@ public class Grid {
 	private byte x;
 	private byte y;
 	private byte status;
+	private int sessionId;
 	public Grid(byte x, byte y, byte status) {
 		super();
 		this.x = x;
@@ -28,7 +29,7 @@ public class Grid {
 
 	@Override
 	public String toString() {
-		return "Grid [x=" + x + ", y=" + y + ", status=" + status + "]";
+		return "Grid [x=" + x + ", y=" + y + ", status=" + status + ", sessionId=" + sessionId + "]";
 	}
 	public byte getX() {
 		return x;
@@ -47,6 +48,15 @@ public class Grid {
 	}
 	public void setStatus(byte status) {
 		this.status = status;
+	}
+
+
+	public int getSessionId() {
+		return sessionId;
+	}
+
+	public void setSessionId(int sessionId) {
+		this.sessionId = sessionId;
 	}
 	
 	

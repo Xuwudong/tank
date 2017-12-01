@@ -14,8 +14,22 @@ public class BulletsObject {
 	private long lastCheckTime;
 	private int speed;
 	private MapGround mapGround;
+	private int paintTime;
 	
-	
+	/**
+	 * 经过绘制的次数
+	 * @return
+	 */
+	public int getPaintTime() {
+		return paintTime;
+	}
+	/**
+	 * 经过绘制的次数
+	 * @param paintTime
+	 */
+	public void setPaintTime(int paintTime) {
+		this.paintTime = paintTime;
+	}
 	public MapGround getMapGround() {
 		return mapGround;
 	}
@@ -68,7 +82,7 @@ public class BulletsObject {
 	public String toString() {
 		return "BulletsObject [x=" + x + ", y=" + y + ", direction=" + direction + ", id=" + id + ", sourceSessionId="
 				+ sourceSessionId + ", lastCheckTime=" + lastCheckTime + ", speed=" + speed + ", mapGround=" + mapGround
-				+ "]";
+				+ ", paintTime=" + paintTime + "]";
 	}
 	
 	

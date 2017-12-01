@@ -33,6 +33,28 @@ public class Client {
 	private int y;
 	private long fireTime;
 	private int fireIntervel;
+	private int canBeFire;
+
+	/**
+	 * 是否还存活
+	 * @return
+	 */
+	public boolean alive() {
+		return (canBeFire) != 0;
+	}
+	
+	/**
+	 * 挨了一炮，如果还活着是true，gg了是false
+	 * @return
+	 */
+	public boolean beFire() {
+		canBeFire--;
+		return alive();
+	}
+
+	public void setCanBeFire(int canBeFire) {
+		this.canBeFire = canBeFire;
+	}
 
 	public int getX() {
 		return x;
@@ -91,7 +113,11 @@ public class Client {
 	}
 
 	public void pushMessage(BaseMessage message) {
-		ctx.writeAndFlush(message);
+		if(ctx != null) {
+			ctx.writeAndFlush(message);
+		}else {
+			logger.error("已经掉线:{}", this.getName());
+		}
 	}
 
 	public void setSessionInCtx(int sessionId) {
@@ -204,8 +230,12 @@ public class Client {
 			
 			//去除占据格子
 			mapGround.getBlocks().get(currentGridIndex).setStatus(GridStatus.CAN_RUN.getStatus());
+			mapGround.getBlocks().get(currentGridIndex).setSessionId(0);
+			
 			//然后占据这个格子
 			mapGround.getBlocks().get(gridIndex).setStatus(GridStatus.HAS_PLAYER.getStatus());
+			mapGround.getBlocks().get(gridIndex).setSessionId(this.sessionId);
+			
 			logger.error("玩家{}进入地图成功", this);
 			return true;
 		}else {
@@ -224,6 +254,14 @@ public class Client {
 		mapGround.getClientInMap().remove(sessionId);
 		mapGround = null;
 		return true;
+	}
+	
+	/**
+	 * 是否在线
+	 * @return
+	 */
+	public boolean isOnline() {
+		return ctx != null;
 	}
 
 	public Client(int sessionId, String name, ChannelHandlerContext ctx) {

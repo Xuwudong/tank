@@ -10,6 +10,8 @@ public interface CmdConstant {
 	public static final int RUN_REQ   = 1003;
 	/** 请求射击 **/
 	public static final int REQ_SHELLS = 1004;
+	/** 请求匹配 **/
+	public static final int REQ_MATCH = 1005;
 	
 	
 	/**------------------------------------------------------------------**/
@@ -23,6 +25,10 @@ public interface CmdConstant {
 	public static final int MAP_RESOURCE_RES = 2003;
 	/** 走动结果 **/
 	public static final int RUN_RES = 2004;
+	/** 射击结果 **/
+	public static final int RES_BULLET = 2005;
+	/** 匹配等待 **/
+	public static final int RES_MATCH = 2006;
 	
 	
 	

@@ -43,7 +43,12 @@ public enum GridStatus {
 	OTHER_TANK_LEFT((byte)11),
 	
 	/** 炮弹 **/
-	SHELLS((byte)12);
+	SHELLS((byte)12),
+	
+	/** 炸弹爆炸 **/
+	BOOM0((byte) 13),
+	
+	;
 	
 	
 
