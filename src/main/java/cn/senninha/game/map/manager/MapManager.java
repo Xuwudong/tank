@@ -143,7 +143,7 @@ public class MapManager {
 				}
 			}
 		}else if(direction == Direction.WEST.getDirection()) {//向西射击
-			for(int i = curGrid ; i >= gridIndex ; i = i--) {
+			for(int i = curGrid ; i >= gridIndex ; i--) {
 				shotSessionId = shoot(bullet, i);
 				if(shotSessionId != 0) {
 					shotGrid = i;
@@ -163,7 +163,7 @@ public class MapManager {
 			shotAndPushMessage(bullet,shotGrid);
 			logger.debug("{}击中了格子{}", bullet.getId(), gridIndex);
 			
-			//缺击中的服务端伤害处理
+			//缺击中的服务端伤害处理,并除掉砖块
 			caculateHurt(shotGrid, bullet);
 		}
 		
@@ -216,10 +216,6 @@ public class MapManager {
 		for(Client client : bullet.getMapGround().getClientInMap().values()) {//推送消息
 			client.pushMessage(res);
 		}
-		
-		/** 从地图中移除这个子弹 **/
-		bullet.getMapGround().getBulletsMap().remove(bullet.getId());
-		bullet.setMapGround(null);
 	}
 	
 	/**
@@ -236,6 +232,10 @@ public class MapManager {
 		}else {
 			//gg了
 		}
+		
+		/** 从地图中移除这个子弹 **/
+		bulletsObject.getMapGround().getBulletsMap().remove(bulletsObject.getId());
+		bulletsObject.setMapGround(null);
 	}
 	
 	/**

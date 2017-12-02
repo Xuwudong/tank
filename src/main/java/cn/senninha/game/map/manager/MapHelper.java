@@ -227,12 +227,12 @@ public class MapHelper {
 			}
 			int leave = y % PER_GRID_PIXEL;
 			y = y + PER_GRID_PIXEL - leave;
-		}else if(direction == Direction.WEST.getDirection()) {//右边
+		}else if(direction == Direction.WEST.getDirection()) {//西边
 			if(index % WIDTH_GRIDS == 0) {
 				return false;
 			}
 			int leave = x % PER_GRID_PIXEL;
-			x = x - leave + 1;
+			x = x - leave - 1;
 		}
 		req.setX(x);
 		req.setY(y);
