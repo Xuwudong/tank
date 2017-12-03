@@ -281,15 +281,18 @@ public class MapManager {
 	public void testEnterMap(Client[] clients) {
 		MapGround map = new MapGround(System.currentTimeMillis(), MapHelper.generateGridRandom());
 		this.addMap(map.getMapId(), map);
+		int[][] bornGrid = new int[][]{{1,1},{20,15}};
+		int index = 0;
 		for (Client client : clients) {
 			client.enterMap(map);
-			int[] bornGrid = MapHelper.getRandomBorn(map);
-			int x = bornGrid[0], y = bornGrid[1];
-			client.updateLocation(x * MapHelper.PER_GRID_PIXEL / 2, y * MapHelper.PER_GRID_PIXEL / 2);
+			int x = bornGrid[index][0], y = bornGrid[index][1]; index++;//选择出生点
+			client.updateLocation(x * MapHelper.PER_GRID_PIXEL  - MapHelper.PER_GRID_PIXEL/ 2, y * MapHelper.PER_GRID_PIXEL - MapHelper.PER_GRID_PIXEL/ 2);
 			logger.error("虚拟进入地图成功");
-
-			client.pushMessage(ResMapResourceMessage.valueOf(map.getBlocks()));
 			logger.error("推送阻挡信息成功");
+		}
+		
+		for(Client client : clients){
+			client.pushMessage(ResMapResourceMessage.valueOf(map.getBlocks()));
 		}
 	}
 }

@@ -3,6 +3,7 @@ package cn.senninha.game.map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import cn.senninha.game.map.message.ReqShellsMessage;
 import cn.senninha.game.util.GameUtil;
@@ -18,8 +19,8 @@ public class MapGround {
 		super();
 		this.mapId = mapId;
 		this.blocks = blocks;
-		clientInMap = new HashMap<Integer, Client>();
-		bulletsMap = new HashMap<>();
+		clientInMap = new ConcurrentHashMap<Integer, Client>();
+		bulletsMap = new ConcurrentHashMap<Integer, BulletsObject>();
 	}
 	
 	public long getMapId() {
