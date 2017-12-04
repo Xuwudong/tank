@@ -3,6 +3,7 @@ package cn.senninha.sserver.handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.senninha.game.map.manager.MapManager;
 import cn.senninha.game.user.UserManager;
 import cn.senninha.game.user.message.ReqHeartbeatMessge;
 import cn.senninha.game.user.message.ReqLoginMessage;
@@ -77,6 +78,7 @@ public class DispatchHandler extends LengthFieldBasedFrameDecoder {
 			if (client != null) {
 				logger.error("用户{}离线", client.getName());
 			}
+			MapManager.getInstance().removeOutLine(client);//清理掉线数据
 		}
 	}
 
@@ -101,10 +103,17 @@ public class DispatchHandler extends LengthFieldBasedFrameDecoder {
 	 */
 	private void disconnect(ChannelHandlerContext ctx) {
 		Integer sessionId = (Integer) (ctx.channel().attr(AttributeKey.valueOf("sessionId"))).get();
+		Client client = null;
 		if(sessionId != null) {
-			ClientContainer.getInstance().remove(sessionId);
+			client = ClientContainer.getInstance().remove(sessionId);
 		}
 		ctx.disconnect();
+		MapManager.getInstance().removeOutLine(client);
+		
+		
+		/**
+		 * 清理掉战斗
+		 */
 		logger.error("心跳超时掉线：{}", sessionId);
 	}
 	

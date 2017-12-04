@@ -1,6 +1,5 @@
 package cn.senninha.game.map;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import cn.senninha.game.map.message.ReqShellsMessage;
 import cn.senninha.game.util.GameUtil;
 import cn.senninha.sserver.client.Client;
+import cn.senninha.sserver.lang.message.BaseMessage;
 
 public class MapGround {
 	private long mapId;
@@ -83,6 +83,16 @@ public class MapGround {
 	 */
 	public void setBulletsMap(Map<Integer, BulletsObject> bulletsMap) {
 		this.bulletsMap = bulletsMap;
+	}
+	
+	/**
+	 * 推送消息给本地图的所有客户端
+	 * @param message
+	 */
+	public void pushMessageInGround(BaseMessage message) {
+		for(Client client : clientInMap.values()) {
+			client.pushMessage(message);
+		}
 	}
 	
 	

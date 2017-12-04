@@ -5,9 +5,11 @@ import java.util.LinkedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.senninha.game.GameStatus;
 import cn.senninha.game.PromptInfo;
 import cn.senninha.game.map.manager.MapManager;
 import cn.senninha.game.map.match.message.ResMatchMessage;
+import cn.senninha.sserver.CmdConstant;
 import cn.senninha.sserver.client.Client;
 
 /**
@@ -44,9 +46,16 @@ public class MatchManager {
 		if(another != null && another.isOnline()) {
 			//匹配成功
 			logger.error("匹配成功");
+			
+			/** 设置生命值 **/
+			client.setCanBeFire(GameStatus.GAME_LIVE.getValue());
+			another.setCanBeFire(GameStatus.GAME_LIVE.getValue());
+			
+			
 			MapManager.getInstance().testEnterMap(new Client[] {client, another});
 		}else {
 			clientToMatch.push(client);
+			
 			client.pushMessage(ResMatchMessage.valueOf(PromptInfo.WAIT_TO_MATCH.getPmt()));
 			logger.error("{}等待匹配中", client.getName());
 		}

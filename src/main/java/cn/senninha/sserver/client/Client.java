@@ -40,7 +40,7 @@ public class Client {
 	 * @return
 	 */
 	public boolean alive() {
-		return (canBeFire) != 0;
+		return (canBeFire) > 0;
 	}
 	
 	/**
@@ -50,6 +50,12 @@ public class Client {
 	public boolean beFire() {
 		canBeFire--;
 		return alive();
+	}
+	
+	
+
+	public int getCanBeFire() {
+		return canBeFire;
 	}
 
 	public void setCanBeFire(int canBeFire) {
@@ -277,6 +283,13 @@ public class Client {
 		return "Client [logger=" + logger + ", sessionId=" + sessionId + ", name=" + name + ", line=" + line + ", ctx="
 				+ ctx + ", mapGround=" + mapGround + ", steps=" + steps + ", speed=" + speed + ", x=" + x + ", y=" + y
 				+ ", fireTime=" + fireTime + ", fireIntervel=" + fireIntervel + "]";
+	}
+	
+	/**
+	 * 下线标志
+	 */
+	public void offline() {
+		this.ctx = null;
 	}
 
 }

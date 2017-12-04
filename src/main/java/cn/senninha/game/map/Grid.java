@@ -12,6 +12,8 @@ import cn.senninha.sserver.lang.message.MessageWrapperAnnotation;
 public class Grid {
 	private byte x;
 	private byte y;
+	private int pixelX;
+	private int pixelY;
 	private byte status;
 	private int sessionId;
 	public Grid(byte x, byte y, byte status) {
@@ -29,7 +31,8 @@ public class Grid {
 
 	@Override
 	public String toString() {
-		return "Grid [x=" + x + ", y=" + y + ", status=" + status + ", sessionId=" + sessionId + "]";
+		return "Grid [x=" + x + ", y=" + y + ", pixelX=" + pixelX + ", pixelY=" + pixelY + ", status=" + status
+				+ ", sessionId=" + sessionId + "]";
 	}
 	public byte getX() {
 		return x;
@@ -58,6 +61,25 @@ public class Grid {
 	public void setSessionId(int sessionId) {
 		this.sessionId = sessionId;
 	}
-	
+
+
+	public int getPixelX() {
+		return pixelX;
+	}
+
+
+	public void setPixelX(int pixelX) {
+		this.pixelX = pixelX;
+	}
+
+
+	public int getPixelY() {
+		return pixelY;
+	}
+
+
+	public void setPixelY(int pixelY) {
+		this.pixelY = pixelY;
+	}
 	
 }

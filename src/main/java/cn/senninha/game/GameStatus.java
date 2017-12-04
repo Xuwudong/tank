@@ -18,6 +18,9 @@ public enum GameStatus {
 	/** 坦克速度 / 10ms **/
 	GAME_COMMON_TANK_SPEED(1),
 	
+	/** 生命值 **/
+	GAME_LIVE(10),
+	
 	
 	;
 	

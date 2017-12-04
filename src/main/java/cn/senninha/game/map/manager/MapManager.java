@@ -12,6 +12,8 @@ import cn.senninha.game.map.Direction;
 import cn.senninha.game.map.Grid;
 import cn.senninha.game.map.GridStatus;
 import cn.senninha.game.map.MapGround;
+import cn.senninha.game.map.match.message.ResBattleResultMessage;
+import cn.senninha.game.map.match.message.ResHitMessage;
 import cn.senninha.game.map.message.ResBulletMessage;
 import cn.senninha.game.map.message.ResMapResourceMessage;
 import cn.senninha.sserver.client.Client;
@@ -92,6 +94,7 @@ public class MapManager {
 		int x = bullet.getX();
 		int y = bullet.getY();
 		byte direction = bullet.getDirection();
+		MapGround mapGround = bullet.getMapGround();
 		
 		long currentTime = System.currentTimeMillis();
 		int curGrid = MapHelper.convertPixelToGridIndex(x, y);
@@ -119,7 +122,7 @@ public class MapManager {
 		int shotSessionId = 0;	//被击中的sessionId
 		int shotGrid = 0; 		//击中的格子
 		if(direction == Direction.NORTH.getDirection()) {//向上射击
-			for(int i = gridIndex ; i >= curGrid ; i = i - MapHelper.WIDTH_GRIDS) {
+			for(int i = curGrid ; i >= gridIndex ; i = i - MapHelper.WIDTH_GRIDS) {
 				shotSessionId = shoot(bullet, i);
 				if(shotSessionId != 0) {
 					shotGrid = i;
@@ -164,7 +167,11 @@ public class MapManager {
 			logger.debug("{}击中了格子{}", bullet.getId(), gridIndex);
 			
 			//缺击中的服务端伤害处理,并除掉砖块
-			caculateHurt(shotGrid, bullet);
+			boolean isOver = caculateHurt(bullet.getSourceSessionId(), shotGrid, bullet);
+			
+			if(isOver) {//游戏结束的处理
+				this.removeMap(mapGround.getMapId()); //移除游戏Map;
+			}
 		}
 		
 		
@@ -223,19 +230,27 @@ public class MapManager {
 	 * @param shotIndex
 	 * @param bulletsObject
 	 */
-	private void caculateHurt(int shotGrid, BulletsObject bulletsObject) {
+	private boolean caculateHurt(int sourceId, int shotGrid, BulletsObject bulletsObject) {
 		int sessionId = bulletsObject.getMapGround().getBlocks().get(shotGrid).getSessionId();
 		Client client = ClientContainer.getInstance().getClient(sessionId);
+		boolean isGameOver = false;
 		if(client.beFire()) {
 			//还活着
-			
+			logger.error("{}挨了一枪，还活着", client.getName());
+			ResHitMessage res = new ResHitMessage(sourceId, sessionId, client.getCanBeFire());
+			bulletsObject.getMapGround().pushMessageInGround(res);
 		}else {
 			//gg了
+			ResBattleResultMessage res = new ResBattleResultMessage(sourceId, sessionId, client.getName());
+			bulletsObject.getMapGround().pushMessageInGround(res);
+			logger.error("{}挨了一枪后，gg了", client.getName());
+			isGameOver = true;
 		}
 		
 		/** 从地图中移除这个子弹 **/
 		bulletsObject.getMapGround().getBulletsMap().remove(bulletsObject.getId());
 		bulletsObject.setMapGround(null);
+		return isGameOver;
 	}
 	
 	/**
@@ -276,6 +291,28 @@ public class MapManager {
 	public void removeMap(long mapId) {
 		map.remove(mapId);
 		logger.error("战斗地图移除：{}", mapId);
+	}
+	
+	/**
+	 * 清理单方向掉线，判定胜负的问题
+	 * @param sessionId 掉线的id
+	 */
+	public void removeOutLine(Client client) {
+		if(client.getMapGround() != null) {//处于战斗中
+			MapGround map = client.getMapGround();
+			int winSessionId = 0;
+			for(Client c : map.getClientInMap().values()) {
+				if(c.getSessionId() != client.getSessionId()) {
+					winSessionId = c.getSessionId();
+				}
+			}
+			ResBattleResultMessage res = new ResBattleResultMessage(winSessionId, client.getSessionId(), client.getName());
+			map.pushMessageInGround(res);
+			this.removeMap(map.getMapId());//移除战斗
+		}else {
+			logger.debug("掉线设备不在战斗中");
+		}
+		client.offline();//设置下线
 	}
 	
 	public void testEnterMap(Client[] clients) {
