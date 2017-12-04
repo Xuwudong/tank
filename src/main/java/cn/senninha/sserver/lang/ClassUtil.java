@@ -130,7 +130,7 @@ public class ClassUtil {
 	 */
 	private static String convertToPackage(String fileName) {
 		String result = fileName.substring(fileName.indexOf("classes") + 8, fileName.length() - 6);
-		return result.replaceAll(File.separator, ".");
+		return result.replaceAll(regexSeprator(), ".");
 	}
 
 	/**
@@ -141,7 +141,19 @@ public class ClassUtil {
 	 */
 	private static String convertToPackageFromJarEntry(String entryName) {
 		String result = entryName.substring(0, entryName.length() - 6);
-		return result.replaceAll(File.separator, ".");
+		return result.replaceAll(regexSeprator(), ".");
+	}
+	
+	/**
+	 * 返回对应操作系统下的分隔符
+	 * @return
+	 */
+	private static String regexSeprator(){
+		if(File.separator.equals("\\")){
+			return "\\\\";
+		}else{
+			return File.separator;
+		}
 	}
 
 }
