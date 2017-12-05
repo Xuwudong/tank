@@ -19,4 +19,22 @@ public class ResHeartbeatMessge extends BaseMessage {
 		return "ResHeartbeatMessge [time=" + time + ", current=" + current + "]";
 	}
 
+	public long getTime() {
+		return time;
+	}
+
+	public void setTime(long time) {
+		this.time = time;
+	}
+
+	public long getCurrent() {
+		return current;
+	}
+
+	public void setCurrent(long current) {
+		this.current = current;
+	}
+	
+	
+
 }

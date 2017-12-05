@@ -43,6 +43,7 @@ public class MapHelper {
 						(byte) (GridStatus.CAN_RUN.getStatus())));
 			}
 		}
+		list.get(0).setStatus(GridStatus.CAN_RUN.getStatus()); //设置出生点
 		return list;
 	}
 

@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.senninha.game.map.manager.MapManager;
-import cn.senninha.game.user.UserManager;
 import cn.senninha.game.user.message.ReqHeartbeatMessge;
 import cn.senninha.game.user.message.ReqLoginMessage;
 import cn.senninha.game.user.message.ResHeartbeatMessge;
@@ -121,7 +120,7 @@ public class DispatchHandler extends LengthFieldBasedFrameDecoder {
 		ReqHeartbeatMessge m = (ReqHeartbeatMessge) message;
 		ResHeartbeatMessge res = new ResHeartbeatMessge(m);
 		Client client = ClientContainer.getInstance().getClient(sessionId);
-		logger.error("收到心跳：{}", m.getTime());
+		logger.error("ping{}", res.getCurrent() - m.getTime());
 		if(client != null) {
 			client.pushMessage(res);
 		}
