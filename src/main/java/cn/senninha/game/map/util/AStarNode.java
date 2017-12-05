@@ -56,7 +56,11 @@ public class AStarNode {
 
 	@Override
 	public String toString() {
-		return "AStarNode [before=" + before + ", value=" + value + ", next=" + next + ", gDistance=" + gDistance + "]";
+		String rValue =  "{" + value.getX() + "," + value.getY() + "}";
+		if(next != null){
+			rValue = rValue + next.toString();
+		}
+		return rValue;
 	}
 
 }

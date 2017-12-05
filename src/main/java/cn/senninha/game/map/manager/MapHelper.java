@@ -42,6 +42,7 @@ public class MapHelper {
 				list.add(new Grid((byte) (i % WIDTH_GRIDS), (byte) (i / WIDTH_GRIDS),
 						(byte) (GridStatus.CAN_RUN.getStatus())));
 			}
+//			list.get(i).setStatus(GridStatus.CAN_RUN.getStatus());
 		}
 		list.get(0).setStatus(GridStatus.CAN_RUN.getStatus()); //设置出生点
 		return list;

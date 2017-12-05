@@ -2,6 +2,7 @@ package cn.senninha.game.map.util;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -65,14 +66,23 @@ public class AStarUtil {
 				return null;
 			}
 			
-			for(int i = 0 ; i < tmp.size() ; i++) {
-				
-				if(closeList.get(.getGrid()) != null) {
-					
+			Iterator<TemFindRoad> iterator = tmp.iterator();
+			TemFindRoad temFindRoad = null;
+			
+			while(iterator.hasNext()){
+				TemFindRoad rem = iterator.next();
+				iterator.remove();
+				if(closeList.get(rem.getGrid()) == null){//不在closelist里的才有用
+					temFindRoad = rem;
+					break;
 				}
+			
 			}
 			
-			TemFindRoad temFindRoad = tmp.remove(0);
+			if(temFindRoad == null){
+				return null;
+			}
+			
 			AStarNode aSTem = new AStarNode(temFindRoad.getGrid(), temFindRoad.getgValue());
 			if(openList.get(temFindRoad) != null) { //在openlist里的话，要进一步进行处理
 				if(cur.getgDistance() < aSTem.getgDistance()) {//小于的话，干掉cur
@@ -93,6 +103,9 @@ public class AStarUtil {
 			for(TemFindRoad t : tmp) {
 				openList.put(t.getGrid(), t.getGrid());
 			}
+			
+			/** 把选中的加入closelist里 **/
+			closeList.put(cur.getValue(), cur.getValue());
 		}
 		return head;
 	}
@@ -164,7 +177,7 @@ public class AStarUtil {
 	 */
 	public static double distanceBetweenTwoPoint(Grid grid0, Grid grid1) {
 		double distance = 0;
-		distance = Math.pow(grid0.getX() - grid1.getX(), 2) + Math.pow(grid0.getPixelY() - grid1.getY(), 2);
+		distance = Math.pow(grid0.getX() - grid1.getX(), 2) + Math.pow(grid0.getY() - grid1.getY(), 2);
 		distance = Math.sqrt(distance);
 		return distance;
 	}
