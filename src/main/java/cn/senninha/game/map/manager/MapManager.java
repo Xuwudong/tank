@@ -263,7 +263,7 @@ public class MapManager {
 		Grid grid = bullet.getMapGround().getBlocks().get(curGrid);
 		if(grid.getSessionId() != 0) {
 			Client client = bullet.getMapGround().getClientInMap().get(grid.getSessionId());
-			if(client != null) {
+			if(client != null && client.getSessionId() != bullet.getSourceSessionId()) {
 				logger.error("{}被击中了：", client.getName());
 				sessionId = grid.getSessionId();
 			}
