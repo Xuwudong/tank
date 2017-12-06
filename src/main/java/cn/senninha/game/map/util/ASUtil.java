@@ -61,7 +61,7 @@ public class ASUtil {
 					}else {
 						if(existInOpen.getgValue() >= node.getgValue()) {//比较G值
 							existInOpen.setgValue(node.getgValue());  	//把较小的G值给它
-							existInOpen.setParent(cur);						//设置父结点为当前
+							existInOpen.setParent(cur);						//设置open里存在的节点的父结点为当前
 						}
 					}
 				}
@@ -115,7 +115,14 @@ public class ASUtil {
 
 		return lists;
 	}
-	
+	/**
+	 * 计算上下是否满足距离
+	 * @param lists
+	 * @param startGrid
+	 * @param current
+	 * @param target
+	 * @param grid
+	 */
 	private static void caculateFourOrientionRoad(List<ASNode> lists, Grid startGrid,
 			Grid current, Grid target, Grid grid) {
 		if (grid.getStatus() == GridStatus.CAN_RUN.getStatus()) { // 可走动

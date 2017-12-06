@@ -64,7 +64,7 @@ public class ASNode implements Comparable<ASNode> {
 	}
 	
 	/**
-	 * 重写equal方法
+	 * 重写equal方法，用Grid来比较ASNode是否是同一个对象。
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -75,7 +75,7 @@ public class ASNode implements Comparable<ASNode> {
 	}
 	
 	/**
-	 * 重写hashCode方法
+	 * 重写hashCode方法，用Grid的值来决定哈希值
 	 */
 	@Override
 	public int hashCode() {
