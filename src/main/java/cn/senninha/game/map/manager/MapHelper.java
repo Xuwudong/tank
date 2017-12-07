@@ -28,7 +28,7 @@ public class MapHelper {
 	public static final int WIDTH_GRIDS = 20; // x方向的格子数
 	public static final int HEIGHT_GRIDS = 15;
 	public static final int TOTAL_GRIDS = WIDTH_GRIDS * HEIGHT_GRIDS;
-	public static final String name = "/tmp/map1512650189098.resource";
+	public static final String name = "/tmp/map1512651427810.resource";
 
 	public static final int PER_GRID_PIXEL = 40; // 每个格子的像素
 	
