@@ -211,8 +211,8 @@ public class MapHelper {
 	 * @return
 	 */
 	private static boolean canRun(Client client, int x, int y) {
-		if(x < PER_GRID_PIXEL / 2 || x >= WIDTH_GRIDS * PER_GRID_PIXEL - PER_GRID_PIXEL / 2
-				|| y < PER_GRID_PIXEL / 2 || y >= HEIGHT_GRIDS * PER_GRID_PIXEL - PER_GRID_PIXEL / 2) {//超过了格子，直接干掉,防止出现越界～
+		if(x < PER_GRID_PIXEL / 2 || x > WIDTH_GRIDS * PER_GRID_PIXEL - PER_GRID_PIXEL / 2
+				|| y < PER_GRID_PIXEL / 2 || y > HEIGHT_GRIDS * PER_GRID_PIXEL - PER_GRID_PIXEL / 2) {//超过了格子，直接干掉,防止出现越界～
 			return false;
 		}
 		return client.updateLocation(x, y);
