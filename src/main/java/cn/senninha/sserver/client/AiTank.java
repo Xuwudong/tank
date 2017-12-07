@@ -2,6 +2,7 @@ package cn.senninha.sserver.client;
 
 import java.util.List;
 
+import cn.senninha.game.map.Grid;
 import cn.senninha.game.map.Steps;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -102,6 +103,11 @@ public class AiTank extends Client {
 		for(Steps step : steps) {
 			super.addSteps(step);
 		}
+	}
+	
+	@Override
+	protected boolean halfValueCheck(List<Grid> grids, int x, int y) {
+		return super.halfValueCheck(grids, x, y);
 	}
 
 }

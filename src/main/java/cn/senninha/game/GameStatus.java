@@ -25,7 +25,7 @@ public enum GameStatus {
 	GAME_LIVE(10),
 	
 	/** AI每一步的步长 **/
-	GAME_AI_PER_STEP(10),
+	GAME_AI_PER_STEP(4),
 	
 	/** AI的速度 /GAME_PER_MILLTIME **/
 	GAME_AI_SPEED(1),

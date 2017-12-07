@@ -316,9 +316,9 @@ public class MapManager {
 	}
 	
 	public void testEnterMap(Client[] clients) {
-		MapGround map = new MapGround(System.currentTimeMillis(), MapHelper.generateGridRandom());
+		MapGround map = new MapGround(System.currentTimeMillis(), MapHelper.getMapFromMapFile(MapHelper.name));
 		this.addMap(map.getMapId(), map);
-		int[][] bornGrid = new int[][]{{1,1},{20,15}, {1, 15}, {20, 1}}; //出生地点，后两个是AI_TANK
+		int[][] bornGrid = new int[][]{{1,1},{19,14}, {2, 15}, {20, 1}}; //出生地点，后两个是AI_TANK
 		int index = 0;
 		for (Client client : clients) {
 			client.enterMap(map);

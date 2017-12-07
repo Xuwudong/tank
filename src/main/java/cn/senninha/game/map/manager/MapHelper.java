@@ -1,5 +1,7 @@
 package cn.senninha.game.map.manager;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -26,6 +28,7 @@ public class MapHelper {
 	public static final int WIDTH_GRIDS = 20; // x方向的格子数
 	public static final int HEIGHT_GRIDS = 15;
 	public static final int TOTAL_GRIDS = WIDTH_GRIDS * HEIGHT_GRIDS;
+	public static final String name = "/tmp/map1512650189098.resource";
 
 	public static final int PER_GRID_PIXEL = 40; // 每个格子的像素
 	
@@ -48,6 +51,41 @@ public class MapHelper {
 		}
 		list.get(0).setStatus(GridStatus.CAN_RUN.getStatus()); //设置出生点为可走
 		list.get(280).setStatus(GridStatus.CAN_RUN.getStatus());
+		return list;
+	}
+	
+	/**
+	 * 从文件里获取地图资源
+	 * @param file
+	 * @return
+	 */
+	public static List<Grid> getMapFromMapFile(String fileName){
+		List<Grid> list = new ArrayList<>(MapHelper.TOTAL_GRIDS);
+		File file = new File(fileName);
+		if(!file.exists()) {
+			System.err.println("找不到地图资源");
+			System.exit(-1);
+		}
+		
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(file);
+			byte[] b = new byte[1024];
+			int len = fis.read(b, 0, b.length);
+			StringBuilder sb = new StringBuilder();
+			while(len != -1) {
+				sb.append(new String(b, 0, len, "utf-8"));
+				len = fis.read(b, 0, b.length);
+			}
+			
+			String resource = sb.toString();
+			for(int i = 0 ; i < resource.length() ; i++) {
+				Grid e = new Grid((byte) (i % WIDTH_GRIDS), (byte) (i / WIDTH_GRIDS), Byte.parseByte(resource.charAt(i) + ""));
+				list.add(e);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 		return list;
 	}
 
@@ -173,8 +211,8 @@ public class MapHelper {
 	 * @return
 	 */
 	private static boolean canRun(Client client, int x, int y) {
-		if(x < 0 || x >= WIDTH_GRIDS * PER_GRID_PIXEL
-				|| y < 0 || y >= HEIGHT_GRIDS * PER_GRID_PIXEL) {//超过了格子，直接干掉,防止出现越界～
+		if(x < PER_GRID_PIXEL / 2 || x >= WIDTH_GRIDS * PER_GRID_PIXEL - PER_GRID_PIXEL / 2
+				|| y < PER_GRID_PIXEL / 2 || y >= HEIGHT_GRIDS * PER_GRID_PIXEL - PER_GRID_PIXEL / 2) {//超过了格子，直接干掉,防止出现越界～
 			return false;
 		}
 		return client.updateLocation(x, y);

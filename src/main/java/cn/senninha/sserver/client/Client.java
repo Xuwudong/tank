@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.senninha.game.map.Grid;
 import cn.senninha.game.map.GridStatus;
 import cn.senninha.game.map.MapGround;
 import cn.senninha.game.map.Steps;
@@ -221,7 +222,11 @@ public class Client {
 	 * @param y
 	 */
 	public boolean updateLocation(int x, int y) {
-		
+//		
+//		if(!halfValueCheck(mapGround.getBlocks(), x, y)) {
+//			return false;
+//		}
+//		
 		int gridIndex = MapHelper.convertPixelToGridIndex(x, y);
 		int currentGridIndex = MapHelper.convertPixelToGridIndex(this.x, this.y);
 		
@@ -249,6 +254,60 @@ public class Client {
 			logger.error("玩家{}进入地图失败", this);
 			return false;
 		}
+		
+	}
+	
+	/**
+	 * 碰撞中值判断，如果不行直接去除这个方法，目前只检测砖头--
+	 * @param x 像素点
+	 * @param y 像素点
+	 * @param gridIndexOfXY 当前像素点代表的格子
+	 * @return
+	 */
+	protected boolean halfValueCheck(List<Grid> grids, int x, int y) {
+		/** 分别进行上，下，左，右的碰撞检测 **/
+		int halfValue = MapHelper.PER_GRID_PIXEL / 2 - 1;
+		int widthMax = MapHelper.PER_GRID_PIXEL * MapHelper.WIDTH_GRIDS - halfValue;
+		int heightMax = MapHelper.PER_GRID_PIXEL * MapHelper.HEIGHT_GRIDS - halfValue;
+		if(x < halfValue || y < halfValue || x > widthMax || y > heightMax) {	//越界了
+			return false;
+		}
+		
+		/** 检测上，右，下，左加上半值是否有砖块 **/
+		int temX, temY;
+		int temGridIndex;
+		
+		/** 上检测 **/
+		temY = y - halfValue;
+		temGridIndex = MapHelper.convertPixelToGridIndex(x, temY);
+		if(grids.get(temGridIndex).getStatus() == GridStatus.CAN_NOT_SHOT.getStatus()) {
+			return false;
+		}
+		
+		/** 右检测 **/
+		temX = x + halfValue;
+		temGridIndex = MapHelper.convertPixelToGridIndex(temX, y);
+		if(grids.get(temGridIndex).getStatus() == GridStatus.CAN_NOT_SHOT.getStatus()) {
+			return false;
+		}
+		
+		/**下检测 **/
+		temY = y + halfValue;
+		temGridIndex = MapHelper.convertPixelToGridIndex(x, temY);
+		if(grids.get(temGridIndex).getStatus() == GridStatus.CAN_NOT_SHOT.getStatus()) {
+			return false;
+		}
+		
+		/**左检测 **/
+		temX = x - halfValue;
+		temGridIndex = MapHelper.convertPixelToGridIndex(temX, y);
+		if(grids.get(temGridIndex).getStatus() == GridStatus.CAN_NOT_SHOT.getStatus()) {
+			return false;
+		}
+		
+		/** 左上角检测，右上角检测，右下角检测，左下角检测 **/
+		
+		return true;
 		
 	}
 
