@@ -332,4 +332,13 @@ public class MapManager {
 			client.pushMessage(ResMapResourceMessage.valueOf(map.getBlocks()));
 		}
 	}
+
+	/**
+	 * 给AiManager调用的--
+	 * @return
+	 */
+	public Map<Long, MapGround> getMap() {
+		return map;
+	}
+	
 }

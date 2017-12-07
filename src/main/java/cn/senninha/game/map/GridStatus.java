@@ -48,6 +48,17 @@ public enum GridStatus {
 	/** 炸弹爆炸 **/
 	BOOM0((byte) 13),
 	
+	/** AI向上 **/
+	AI_UP((byte) 14),
+	
+	/** AI向左 **/
+	AI_RIGHT((byte) 15),
+
+	/** AI向下 **/
+	AI_DOWN((byte) 16),
+	
+	/** AI向左 **/
+	AI_LEFT((byte) 17),
 	;
 	
 	

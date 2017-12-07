@@ -6,7 +6,7 @@ import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
 import cn.senninha.game.GameStatus;
-import cn.senninha.game.map.Direction;
+import cn.senninha.game.ai.AiManager;
 import cn.senninha.game.map.manager.MapManager;
 import cn.senninha.sserver.ServerStart;
 import cn.senninha.sserver.client.Client;
@@ -46,6 +46,15 @@ public class HandleContext {
 				MapManager.getInstance().checkBullets();
 			}
 		}));
+		
+		/** 注册AI检测任务 **/
+		addCommand(0, new Task(GameStatus.GAME_AI_CHECK_INTERVAL.getValue(), true, GameStatus.GAME_AI_CHECK_INTERVAL.getValue(), TimeUnit.MILLISECONDS, new Runnable() {
+			
+			@Override
+			public void run() {
+				AiManager.getInstance().check();
+			}
+		}));
 	}
 	
 	public void dispatch(int sessionId, BaseMessage message) {
@@ -65,10 +74,10 @@ public class HandleContext {
 	}
 	
 	/**
-	 * 
+	 * 添加任务到HandleContext
 	 * @param task
 	 */
-	private void addCommand(int line, Task task) {
+	public void addCommand(int line, Task task) {
 		processor[line].addCommand(task);
 	}
 	

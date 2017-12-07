@@ -15,7 +15,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
 
 /**
- * 客户端
+ * 客户端, AI也功用这个--
  * 
  * @author senninha on 2017年11月8日
  *
@@ -34,6 +34,8 @@ public class Client {
 	private long fireTime;
 	private int fireIntervel;
 	private int canBeFire;
+	private boolean isAi;
+	private int aiTarget;
 
 	/**
 	 * 是否还存活
@@ -122,7 +124,7 @@ public class Client {
 		if(ctx != null) {
 			ctx.writeAndFlush(message);
 		}else {
-			logger.error("已经掉线:{}", this.getName());
+//			logger.error("已经掉线:{}", this.getName());
 		}
 	}
 
@@ -291,5 +293,31 @@ public class Client {
 	public void offline() {
 		this.ctx = null;
 	}
+
+	/**
+	 * 是否是AI
+	 * @return
+	 */
+	public boolean isAi() {
+		return isAi;
+	}
+
+	public void setAi(boolean isAi) {
+		this.isAi = isAi;
+	}
+	
+	/**
+	 * 获取ai的攻击目标
+	 * @return
+	 */
+	public int getAiTarget() {
+		return aiTarget;
+	}
+
+	public void setAiTarget(int aiTarget) {
+		this.aiTarget = aiTarget;
+	}
+	
+	
 
 }

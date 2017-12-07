@@ -12,6 +12,9 @@ public enum GameStatus {
 	/** 子弹检测的间隔时间 **/
 	GAME_BULLETS_CHECK_INTERVEL(50),
 	
+	/** AI检测任务 **/
+	GAME_AI_CHECK_INTERVAL(50),
+	
 	/** 通用子弹速度 / 10ms**/
 	GAME_COMMON_BULLET_SPEED(5),
 	
