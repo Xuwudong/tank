@@ -11,6 +11,8 @@ import cn.senninha.game.GameStatus;
 import cn.senninha.game.PromptInfo;
 import cn.senninha.game.map.manager.MapManager;
 import cn.senninha.game.map.match.message.ResMatchMessage;
+import cn.senninha.game.util.GameUtil;
+import cn.senninha.sserver.client.AiTank;
 import cn.senninha.sserver.client.Client;
 
 /**
@@ -65,8 +67,16 @@ public class MatchManager {
 			client.setCanBeFire(GameStatus.GAME_LIVE.getValue());
 			another.setCanBeFire(GameStatus.GAME_LIVE.getValue());
 			
+			/** 设置AI **/
+			AiTank ai0 = new AiTank(GameUtil.generateIntegerId(), "AI_To_" + another.getSessionId(), null);
+			ai0.setAiTarget(another.getSessionId());
+			ai0.setSpeed(GameStatus.GAME_AI_SPEED.getValue());
 			
-			MapManager.getInstance().testEnterMap(new Client[] {client, another});
+			AiTank ai1 = new AiTank(GameUtil.generateIntegerId(), "AI_To_" + client.getSessionId(), null);
+			ai1.setAiTarget(client.getSessionId());
+			ai1.setSpeed(GameStatus.GAME_AI_SPEED.getValue());
+			
+			MapManager.getInstance().testEnterMap(new Client[] {client, another, ai0, ai1});
 		}else {
 			oneVoneMap.put(client.getSessionId(), client);
 			client.pushMessage(ResMatchMessage.valueOf(PromptInfo.WAIT_TO_MATCH.getPmt()));

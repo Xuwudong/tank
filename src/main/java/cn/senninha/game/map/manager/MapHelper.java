@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import cn.senninha.game.GameStatus;
 import cn.senninha.game.map.Direction;
 import cn.senninha.game.map.Grid;
 import cn.senninha.game.map.GridStatus;
@@ -11,6 +12,7 @@ import cn.senninha.game.map.MapGround;
 import cn.senninha.game.map.Steps;
 import cn.senninha.game.map.message.ReqShellsMessage;
 import cn.senninha.game.map.message.ResRunResultMessage;
+import cn.senninha.sserver.client.AiTank;
 import cn.senninha.sserver.client.Client;
 
 /**
@@ -44,7 +46,8 @@ public class MapHelper {
 			}
 //			list.get(i).setStatus(GridStatus.CAN_RUN.getStatus());
 		}
-		list.get(0).setStatus(GridStatus.CAN_RUN.getStatus()); //设置出生点
+		list.get(0).setStatus(GridStatus.CAN_RUN.getStatus()); //设置出生点为可走
+		list.get(280).setStatus(GridStatus.CAN_RUN.getStatus());
 		return list;
 	}
 
@@ -64,7 +67,7 @@ public class MapHelper {
 		long current = System.currentTimeMillis();
 		long intervel = current - step.getGenerateTime();
 
-		int hasRun = (int) (intervel / 5 * client.getSpeed()); // 已经走过的像素
+		int hasRun = (int) (intervel / GameStatus.GAME_PER_MILLTIME.getValue() * client.getSpeed()); // 已经走过的像素
 		hasRun = hasRun > step.getStep() ? step.getStep() : hasRun;	//如果太大取小的值
 		int x = client.getX();
 		int y = client.getY();
@@ -91,9 +94,13 @@ public class MapHelper {
 				step.setStep((byte)hasRun);
 				step.setGenerateTime(current);
 			}
-			return new ResRunResultMessage(x, y, client.getSessionId(), status);
-		}else {	//如果不能走动，直接返回false，并且移除这个走动
-			client.removeHeadSteps();
+			ResRunResultMessage res = new ResRunResultMessage(x, y, client.getSessionId(), step.getDirection());
+			if(client instanceof AiTank) {
+				res.setIsAI((byte)1); //AI坦克标志
+			}
+			return res;
+		}else {	//如果不能走动，移除全部走动
+			client.clearAllSteps();
 			return null;
 		}
 

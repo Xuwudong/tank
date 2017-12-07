@@ -82,7 +82,7 @@ public class MapManager {
 			for(Client c : client.getMapGround().getClientInMap().values()) {
 				c.pushMessage(res);
 			}
-			logger.error("推送{}跑动信息完毕", client.getName());
+			logger.debug("推送{}跑动信息完毕", client.getName());
 		}
 	}
 	
@@ -236,14 +236,14 @@ public class MapManager {
 		boolean isGameOver = false;
 		if(client.beFire()) {
 			//还活着
-			logger.error("{}挨了一枪，还活着", client.getName());
+			logger.debug("{}挨了一枪，还活着", client.getName());
 			ResHitMessage res = new ResHitMessage(sourceId, sessionId, client.getCanBeFire());
 			bulletsObject.getMapGround().pushMessageInGround(res);
 		}else {
 			//gg了
 			ResBattleResultMessage res = new ResBattleResultMessage(sourceId, sessionId, client.getName());
 			bulletsObject.getMapGround().pushMessageInGround(res);
-			logger.error("{}挨了一枪后，gg了", client.getName());
+			logger.debug("{}挨了一枪后，gg了", client.getName());
 			isGameOver = true;
 		}
 		
@@ -264,7 +264,7 @@ public class MapManager {
 		if(grid.getSessionId() != 0) {
 			Client client = bullet.getMapGround().getClientInMap().get(grid.getSessionId());
 			if(client != null && client.getSessionId() != bullet.getSourceSessionId()) {
-				logger.error("{}被击中了：", client.getName());
+				logger.debug("{}被击中了：", client.getName());
 				sessionId = grid.getSessionId();
 			}
 		}else if(grid.getStatus() == GridStatus.CAN_NOT_SHOT.getStatus()) {
@@ -281,7 +281,7 @@ public class MapManager {
 	 */
 	public void addMap(long mapId, MapGround mapGround) {
 		map.put(mapId, mapGround);
-		logger.error("新加入战斗地图：{}", mapId);
+		logger.debug("新加入战斗地图：{}", mapId);
 	}
 	
 	/**
@@ -290,7 +290,7 @@ public class MapManager {
 	 */
 	public void removeMap(long mapId) {
 		map.remove(mapId);
-		logger.error("战斗地图移除：{}", mapId);
+		logger.debug("战斗地图移除：{}", mapId);
 	}
 	
 	/**
@@ -318,14 +318,14 @@ public class MapManager {
 	public void testEnterMap(Client[] clients) {
 		MapGround map = new MapGround(System.currentTimeMillis(), MapHelper.generateGridRandom());
 		this.addMap(map.getMapId(), map);
-		int[][] bornGrid = new int[][]{{1,1},{20,15}};
+		int[][] bornGrid = new int[][]{{1,1},{20,15}, {1, 15}, {20, 1}}; //出生地点，后两个是AI_TANK
 		int index = 0;
 		for (Client client : clients) {
 			client.enterMap(map);
 			int x = bornGrid[index][0], y = bornGrid[index][1]; index++;//选择出生点
 			client.updateLocation(x * MapHelper.PER_GRID_PIXEL  - MapHelper.PER_GRID_PIXEL/ 2, y * MapHelper.PER_GRID_PIXEL - MapHelper.PER_GRID_PIXEL/ 2);
-			logger.error("虚拟进入地图成功");
-			logger.error("推送阻挡信息成功");
+			logger.debug("虚拟进入地图成功");
+			logger.debug("推送阻挡信息成功");
 		}
 		
 		for(Client client : clients){

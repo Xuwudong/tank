@@ -1,17 +1,17 @@
 package cn.senninha.game.map.message;
 
-
 import cn.senninha.sserver.CmdConstant;
 import cn.senninha.sserver.lang.message.BaseMessage;
 import cn.senninha.sserver.lang.message.Message;
 
 @Message(cmd = CmdConstant.RUN_RES)
-public class ResRunResultMessage extends BaseMessage{
+public class ResRunResultMessage extends BaseMessage {
 	private int x;
 	private int y;
 	private int direction;
 	private int sessionId;
-	
+	/** 0是正常，1是AI **/
+	private byte isAI;
 
 	public ResRunResultMessage() {
 		super();
@@ -48,13 +48,21 @@ public class ResRunResultMessage extends BaseMessage{
 	public void setSessionId(int sessionId) {
 		this.sessionId = sessionId;
 	}
-	
+
 	public int getDirection() {
 		return direction;
 	}
 
 	public void setDirection(int direction) {
 		this.direction = direction;
+	}
+
+	public boolean getIsAI() {
+		return isAI == 1;
+	}
+
+	public void setIsAI(byte isAI) {
+		this.isAI = isAI;
 	}
 
 	@Override

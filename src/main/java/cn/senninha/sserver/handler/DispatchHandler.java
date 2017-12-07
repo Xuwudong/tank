@@ -1,5 +1,7 @@
 package cn.senninha.sserver.handler;
 
+import java.util.concurrent.TimeUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +15,7 @@ import cn.senninha.sserver.client.ClientContainer;
 import cn.senninha.sserver.lang.ByteBufUtil;
 import cn.senninha.sserver.lang.codec.CodecFactory;
 import cn.senninha.sserver.lang.dispatch.HandleContext;
+import cn.senninha.sserver.lang.dispatch.Task;
 import cn.senninha.sserver.lang.message.BaseMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -102,12 +105,20 @@ public class DispatchHandler extends LengthFieldBasedFrameDecoder {
 	 */
 	private void disconnect(ChannelHandlerContext ctx) {
 		Integer sessionId = (Integer) (ctx.channel().attr(AttributeKey.valueOf("sessionId"))).get();
-		Client client = null;
-		if(sessionId != null) {
-			client = ClientContainer.getInstance().remove(sessionId);
-		}
 		ctx.disconnect();
-		MapManager.getInstance().removeOutLine(client);
+		if(sessionId == null) {
+			return;
+		}
+		final Client client = ClientContainer.getInstance().remove(sessionId);
+		
+		//掉线处理回归场景线程
+		HandleContext.getInstance().addCommand(0, new Task(0, false, 0, TimeUnit.MILLISECONDS, new Runnable() {
+			
+			@Override
+			public void run() {
+				MapManager.getInstance().removeOutLine(client);
+			}
+		}));
 		
 		
 		/**

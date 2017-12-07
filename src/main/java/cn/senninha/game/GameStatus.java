@@ -13,16 +13,25 @@ public enum GameStatus {
 	GAME_BULLETS_CHECK_INTERVEL(50),
 	
 	/** AI检测任务 **/
-	GAME_AI_CHECK_INTERVAL(50),
+	GAME_AI_CHECK_INTERVAL(100),
 	
 	/** 通用子弹速度 / 10ms**/
-	GAME_COMMON_BULLET_SPEED(5),
+	GAME_COMMON_BULLET_SPEED(10),
 	
 	/** 坦克速度 / 10ms **/
-	GAME_COMMON_TANK_SPEED(1),
+	GAME_COMMON_TANK_SPEED(2),
 	
 	/** 生命值 **/
 	GAME_LIVE(10),
+	
+	/** AI每一步的步长 **/
+	GAME_AI_PER_STEP(10),
+	
+	/** AI的速度 /GAME_PER_MILLTIME **/
+	GAME_AI_SPEED(1),
+	
+	/** 上面的速度是 /多少毫秒 **/
+	GAME_PER_MILLTIME(10),
 	
 	
 	;

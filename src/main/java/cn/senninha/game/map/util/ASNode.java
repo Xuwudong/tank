@@ -1,7 +1,6 @@
 package cn.senninha.game.map.util;
 
 import cn.senninha.game.map.Grid;
-import cn.senninha.game.map.GridStatus;
 
 /**
  * A*搜寻结点
@@ -64,7 +63,7 @@ public class ASNode implements Comparable<ASNode> {
 	}
 	
 	/**
-	 * 重写equal方法，用Grid来比较ASNode是否是同一个对象。
+	 * 重写equal方法
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -75,7 +74,7 @@ public class ASNode implements Comparable<ASNode> {
 	}
 	
 	/**
-	 * 重写hashCode方法，用Grid的值来决定哈希值
+	 * 重写hashCode方法
 	 */
 	@Override
 	public int hashCode() {
@@ -85,9 +84,9 @@ public class ASNode implements Comparable<ASNode> {
 	@Override
 	public String toString() {
 		String rValue = "{" + value.getX() + "," + value.getY() + "} ";
-		value.setStatus((byte)GridStatus.OTHER_TANK_DOWN.getStatus());
-		value.setPixelX(value.getX() * 40 + 20);
-		value.setPixelY(value.getY() * 40 + 20);
+//		value.setStatus((byte)GridStatus.OTHER_TANK_DOWN.getStatus());
+//		value.setPixelX(value.getX() * 40 + 20);
+//		value.setPixelY(value.getY() * 40 + 20);
 		if(parent != null) {
 			rValue = rValue + parent.toString();
 		}

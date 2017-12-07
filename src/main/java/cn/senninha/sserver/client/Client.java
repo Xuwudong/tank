@@ -34,8 +34,7 @@ public class Client {
 	private long fireTime;
 	private int fireIntervel;
 	private int canBeFire;
-	private boolean isAi;
-	private int aiTarget;
+
 
 	/**
 	 * 是否还存活
@@ -133,7 +132,7 @@ public class Client {
 	}
 
 	public void clearAllSteps() {
-		if (mapGround == null) {
+		if (mapGround != null) {
 			steps.clear();
 		}
 	}
@@ -293,31 +292,4 @@ public class Client {
 	public void offline() {
 		this.ctx = null;
 	}
-
-	/**
-	 * 是否是AI
-	 * @return
-	 */
-	public boolean isAi() {
-		return isAi;
-	}
-
-	public void setAi(boolean isAi) {
-		this.isAi = isAi;
-	}
-	
-	/**
-	 * 获取ai的攻击目标
-	 * @return
-	 */
-	public int getAiTarget() {
-		return aiTarget;
-	}
-
-	public void setAiTarget(int aiTarget) {
-		this.aiTarget = aiTarget;
-	}
-	
-	
-
 }

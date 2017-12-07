@@ -9,11 +9,6 @@ import java.util.Map;
 import cn.senninha.game.map.Grid;
 import cn.senninha.game.map.GridStatus;
 
-/**
- * A*寻路
- * @author senninha
- *
- */
 public class ASUtil {
 
 	public static void main(String[] args) {
@@ -61,7 +56,7 @@ public class ASUtil {
 					}else {
 						if(existInOpen.getgValue() >= node.getgValue()) {//比较G值
 							existInOpen.setgValue(node.getgValue());  	//把较小的G值给它
-							existInOpen.setParent(cur);						//设置open里存在的节点的父结点为当前
+							existInOpen.setParent(cur);						//设置父结点为当前
 						}
 					}
 				}
@@ -92,6 +87,7 @@ public class ASUtil {
 	private static List<ASNode> findNodeFromFourOriention(List<Grid> grids, Grid source, Grid target, ASNode cur, int width, int height){
 		List<ASNode> lists = new ArrayList<>(4);
 		Grid current = cur.getValue();
+		/** 计算逻辑待完善 **/
 		/** 上 **/
 		if (current.getY() - 1 >= 0) { // 不越界
 			Grid next = grids.get(((current.getY() - 1) * width) + current.getX());
@@ -115,17 +111,10 @@ public class ASUtil {
 
 		return lists;
 	}
-	/**
-	 * 计算上下是否满足距离
-	 * @param lists
-	 * @param startGrid
-	 * @param current
-	 * @param target
-	 * @param grid
-	 */
+	
 	private static void caculateFourOrientionRoad(List<ASNode> lists, Grid startGrid,
 			Grid current, Grid target, Grid grid) {
-		if (grid.getStatus() == GridStatus.CAN_RUN.getStatus()) { // 可走动
+		if (grid.getStatus() != GridStatus.CAN_NOT_SHOT.getStatus()) { // 可走动
 			int hValue = Math.abs(target.getX() - grid.getX()) + Math.abs(target.getY() - grid.getY());
 			int gValue = Math.abs(startGrid.getX() - grid.getX()) + Math.abs(startGrid.getY() - grid.getY());
 			ASNode tem = new ASNode(grid, gValue, hValue, null);
