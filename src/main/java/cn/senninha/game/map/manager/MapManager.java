@@ -163,7 +163,7 @@ public class MapManager {
 		}else {							//击中了
 			
 			//消息推送和子弹去除
-			shotAndPushMessage(bullet,shotGrid);
+			shotAndPushMessage(bullet,shotGrid, bullet.getMapGround().getClientInMap().get(shotSessionId));
 			logger.debug("{}击中了格子{}", bullet.getId(), gridIndex);
 			
 			//缺击中的服务端伤害处理,并除掉砖块
@@ -212,13 +212,14 @@ public class MapManager {
 	 * @param bullet
 	 * @param shotGrid
 	 */
-	private void shotAndPushMessage(BulletsObject bullet, int shotGrid) {
+	private void shotAndPushMessage(BulletsObject bullet, int shotGrid, Client target) {
 		ResBulletMessage res = new ResBulletMessage();
 		res.setId(bullet.getId());
 		res.setStatus(GridStatus.BOOM0.getStatus());
-		int[] xy = MapHelper.convertGridIndexToPixel(shotGrid);
-		res.setX(xy[0]);
-		res.setY(xy[1]);
+		
+		
+		res.setX(target.getX());
+		res.setY(target.getY());
 		
 		for(Client client : bullet.getMapGround().getClientInMap().values()) {//推送消息
 			client.pushMessage(res);

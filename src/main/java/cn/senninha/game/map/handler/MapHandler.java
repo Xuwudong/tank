@@ -39,6 +39,8 @@ public class MapHandler {
 		if(canShot){
 			MapGround ground = client.getMapGround();
 			if(ground != null){
+				req.setX(client.getX());
+				req.setY(client.getY());
 				if(!MapHelper.corrcetFireSource(req)) {
 					logger.error("射击源未校验通过", req);
 				}else {
