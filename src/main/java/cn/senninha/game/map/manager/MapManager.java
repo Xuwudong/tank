@@ -16,6 +16,7 @@ import cn.senninha.game.map.match.message.ResBattleResultMessage;
 import cn.senninha.game.map.match.message.ResHitMessage;
 import cn.senninha.game.map.message.ResBulletMessage;
 import cn.senninha.game.map.message.ResMapResourceMessage;
+import cn.senninha.sserver.client.AiTank;
 import cn.senninha.sserver.client.Client;
 import cn.senninha.sserver.client.ClientContainer;
 import cn.senninha.sserver.lang.message.BaseMessage;
@@ -264,7 +265,10 @@ public class MapManager {
 		Grid grid = bullet.getMapGround().getBlocks().get(curGrid);
 		if(grid.getSessionId() != 0) {
 			Client client = bullet.getMapGround().getClientInMap().get(grid.getSessionId());
-			if(client != null && client.getSessionId() != bullet.getSourceSessionId()) {
+			if(client != null &&client.getSessionId() != bullet.getSourceSessionId()) {
+				if(client instanceof AiTank) {//射中了坦克，等于射中阻挡
+					return -1;
+				}
 				logger.debug("{}被击中了：", client.getName());
 				sessionId = grid.getSessionId();
 			}
