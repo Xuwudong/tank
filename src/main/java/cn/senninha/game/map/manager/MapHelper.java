@@ -289,6 +289,20 @@ public class MapHelper {
 		return true;
 	}
 	
+	/**
+	 * 计算两点之间的平方
+	 * @param x0
+	 * @param y0
+	 * @param x1
+	 * @param y1
+	 * @return
+	 */
+	public static double getDistanceBetweenTwoPoint(int x0, int y0, int x1, int y1) {
+		double xPow = Math.pow((x0 - x1), 2);
+		double yPow = Math.pow((y0 - y1), 2);
+		return Math.sqrt(xPow + yPow);
+	}
+	
 	public static void main(String[] args) {
 		int gridIndex = 20;
 		System.out.println(convertPixelToGridIndex(convertGridIndexToPixel(gridIndex)[0], convertGridIndexToPixel(gridIndex)[1]));

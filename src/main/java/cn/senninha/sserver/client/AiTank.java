@@ -2,8 +2,10 @@ package cn.senninha.sserver.client;
 
 import java.util.List;
 
+import cn.senninha.game.GameStatus;
 import cn.senninha.game.map.Grid;
 import cn.senninha.game.map.Steps;
+import cn.senninha.game.map.manager.MapHelper;
 import io.netty.channel.ChannelHandlerContext;
 
 /**
@@ -18,6 +20,7 @@ public class AiTank extends Client {
 	private int bornY;
 	private int aiTarget;
 	private int lastTargetGridIndex;
+	private long lastHrut;
 
 	public AiTank(int sessionId, String name, ChannelHandlerContext ctx) {
 		super(sessionId, name, ctx);
@@ -108,6 +111,25 @@ public class AiTank extends Client {
 	@Override
 	protected boolean halfValueCheck(List<Grid> grids, int x, int y) {
 		return super.halfValueCheck(grids, x, y);
+	}
+	
+	/**
+	 * 冷却时间是否到达
+	 * @return
+	 */
+	public boolean isCoolDown() {
+		long cur = System.currentTimeMillis();
+		if(cur - lastHrut >= GameStatus.AI_HURT_COOL_DOWN.getValue()) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 设置开始冷却时间
+	 */
+	public void setCoolDown() {
+		this.lastHrut = System.currentTimeMillis();
 	}
 
 }
