@@ -13,6 +13,8 @@ public enum PromptInfo {
 	
 	GAME_RULE("射击绿色的坦克，同时不能被蓝色的警察抓到，一旦被抓到，生命值-1"),
 	
+	AI_DIE("被ai击杀")
+	
 	;
 	private String info;
 	private PromptInfo(String info) {

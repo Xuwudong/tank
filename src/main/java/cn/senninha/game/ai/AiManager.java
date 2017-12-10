@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import cn.senninha.game.GameStatus;
 import cn.senninha.game.PromptInfo;
 import cn.senninha.game.ai.message.ResAiHurtMessage;
+import cn.senninha.game.ai.message.ResAiKillMessage;
 import cn.senninha.game.map.Direction;
 import cn.senninha.game.map.Grid;
 import cn.senninha.game.map.MapGround;
@@ -78,12 +79,14 @@ public class AiManager {
 					continue;
 				}
 				
-				boolean isHrut = aiHurt(ai);
-				if(isHrut) { //如果已经冷却并且造成了伤害
+				int isHrut = aiHurt(ai);
+				if(isHrut == 1) { //如果已经冷却并且造成了伤害
 					ai.clearAllSteps();
 					aiHurtPushMessage(ai);
 					ai.setCoolDown();	 //重新设置冷却时间
 					continue;
+				}else if(isHrut == 2){//已经死亡
+					break;
 				}
 				
 				List<Grid> grids = ground.getBlocks();
@@ -165,19 +168,31 @@ public class AiManager {
 	/**
 	 * AI是否造成了伤害
 	 * @param aiTank
-	 * @return
+	 * @return 0 无伤害，1伤害，2死亡
 	 */
-	private boolean aiHurt(AiTank aiTank) {
-		boolean rValue = false;
+	private int aiHurt(AiTank aiTank) {
+		int rValue = 0;
 		Client c = ClientContainer.getInstance().getClient(aiTank.getAiTarget());
 		if(c != null) {
 			double distance = MapHelper.getDistanceBetweenTwoPoint(aiTank.getX(), aiTank.getY(), c.getX(), c.getY());
 			if(distance <= GameStatus.AI_HURT_DISTANCE.getValue()) {
 				boolean isAlive = c.beFire();
-				if(!isAlive) { //挂了,待完善
-					
+				rValue = 1;
+				if(!isAlive) { //挂了,待完善					 
+					 /** 推送死亡信息 **/
+					 int dieSessionId = aiTank.getAiTarget();
+					 ResAiKillMessage res = new ResAiKillMessage();
+					 res.setDisSessionId(dieSessionId); 
+					 res.setInfo(PromptInfo.AI_DIE.getPmt());
+					 
+					 for(Client client : aiTank.getMapGround().getClientInMap().values()){
+						 client.pushMessage(res);
+					 }
+					 //清理战斗
+					 MapManager.getInstance().removeMap(aiTank.getMapGround().getMapId());
+					 rValue = 2;
 				}
-				rValue = true;
+				
 			}
 		}
 		return rValue;
