@@ -114,7 +114,7 @@ public class ASUtil {
 	
 	private static void caculateFourOrientionRoad(List<ASNode> lists, Grid startGrid,
 			Grid current, Grid target, Grid grid) {
-		if (grid.getStatus() != GridStatus.CAN_NOT_SHOT.getStatus()) { // 可走动
+		if (grid.getStatus() == GridStatus.CAN_RUN.getStatus() || grid == target) { // 目标节点是否可行走不受影响
 			int hValue = Math.abs(target.getX() - grid.getX()) + Math.abs(target.getY() - grid.getY());
 			int gValue = Math.abs(startGrid.getX() - grid.getX()) + Math.abs(startGrid.getY() - grid.getY());
 			ASNode tem = new ASNode(grid, gValue, hValue, null);

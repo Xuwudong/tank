@@ -1,5 +1,6 @@
 package cn.senninha.game.user.message;
 
+import cn.senninha.game.PromptInfo;
 import cn.senninha.sserver.CmdConstant;
 import cn.senninha.sserver.lang.message.BaseMessage;
 import cn.senninha.sserver.lang.message.Message;
@@ -13,7 +14,7 @@ public class ResLoginMessage extends BaseMessage {
 		ResLoginMessage m = new ResLoginMessage();
 		if(status == 1) {
 			m.setStatus((byte)1);
-			m.setInfo("登陆成功");
+			m.setInfo(PromptInfo.GAME_RULE.getPmt());
 		}else {
 			m.setInfo("登陆失败");
 		}

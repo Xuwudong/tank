@@ -16,6 +16,7 @@ import cn.senninha.game.map.match.message.ResBattleResultMessage;
 import cn.senninha.game.map.match.message.ResHitMessage;
 import cn.senninha.game.map.message.ResBulletMessage;
 import cn.senninha.game.map.message.ResMapResourceMessage;
+import cn.senninha.sserver.client.AiTank;
 import cn.senninha.sserver.client.Client;
 import cn.senninha.sserver.client.ClientContainer;
 import cn.senninha.sserver.lang.message.BaseMessage;
@@ -163,7 +164,7 @@ public class MapManager {
 		}else {							//击中了
 			
 			//消息推送和子弹去除
-			shotAndPushMessage(bullet,shotGrid);
+			shotAndPushMessage(bullet,shotGrid, bullet.getMapGround().getClientInMap().get(shotSessionId));
 			logger.debug("{}击中了格子{}", bullet.getId(), gridIndex);
 			
 			//缺击中的服务端伤害处理,并除掉砖块
@@ -212,13 +213,14 @@ public class MapManager {
 	 * @param bullet
 	 * @param shotGrid
 	 */
-	private void shotAndPushMessage(BulletsObject bullet, int shotGrid) {
+	private void shotAndPushMessage(BulletsObject bullet, int shotGrid, Client target) {
 		ResBulletMessage res = new ResBulletMessage();
 		res.setId(bullet.getId());
 		res.setStatus(GridStatus.BOOM0.getStatus());
-		int[] xy = MapHelper.convertGridIndexToPixel(shotGrid);
-		res.setX(xy[0]);
-		res.setY(xy[1]);
+		
+		
+		res.setX(target.getX());
+		res.setY(target.getY());
 		
 		for(Client client : bullet.getMapGround().getClientInMap().values()) {//推送消息
 			client.pushMessage(res);
@@ -263,7 +265,10 @@ public class MapManager {
 		Grid grid = bullet.getMapGround().getBlocks().get(curGrid);
 		if(grid.getSessionId() != 0) {
 			Client client = bullet.getMapGround().getClientInMap().get(grid.getSessionId());
-			if(client != null && client.getSessionId() != bullet.getSourceSessionId()) {
+			if(client != null &&client.getSessionId() != bullet.getSourceSessionId()) {
+				if(client instanceof AiTank) {//射中了坦克，等于射中阻挡
+					return -1;
+				}
 				logger.debug("{}被击中了：", client.getName());
 				sessionId = grid.getSessionId();
 			}

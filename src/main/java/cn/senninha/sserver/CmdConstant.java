@@ -33,6 +33,8 @@ public interface CmdConstant {
 	public static final int RES_BATTLE_RESULT = 2007;
 	/** 战斗过程的推送 **/
 	public static final int RES_HIT_RESULT = 2008;
+	/** Ai 伤害推送 **/
+	public static final int RES_AI_HURT = 2009;
 	
 	
 	

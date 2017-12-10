@@ -33,6 +33,12 @@ public enum GameStatus {
 	/** 上面的速度是 /多少毫秒 **/
 	GAME_PER_MILLTIME(10),
 	
+	/** AI造成伤害的距离 **/
+	AI_HURT_DISTANCE(60),
+	
+	/** AI造成伤害后冷却的时间 ms**/
+	AI_HURT_COOL_DOWN(5000),
+	
 	
 	;
 	

@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.senninha.game.GameStatus;
+import cn.senninha.game.PromptInfo;
+import cn.senninha.game.ai.message.ResAiHurtMessage;
 import cn.senninha.game.map.Direction;
 import cn.senninha.game.map.Grid;
 import cn.senninha.game.map.MapGround;
@@ -18,6 +20,7 @@ import cn.senninha.game.map.util.ASNode;
 import cn.senninha.game.map.util.ASUtil;
 import cn.senninha.sserver.client.AiTank;
 import cn.senninha.sserver.client.Client;
+import cn.senninha.sserver.client.ClientContainer;
 
 /**
  * AI管理类
@@ -68,6 +71,21 @@ public class AiManager {
 		for (Client tem : ground.getClientInMap().values()) {
 			if (tem instanceof AiTank) { // 是AI
 				AiTank ai = (AiTank) tem;
+
+				boolean canHurt = ai.isCoolDown();
+				
+				if(!canHurt) {	//未冷却
+					continue;
+				}
+				
+				boolean isHrut = aiHurt(ai);
+				if(isHrut) { //如果已经冷却并且造成了伤害
+					ai.clearAllSteps();
+					aiHurtPushMessage(ai);
+					ai.setCoolDown();	 //重新设置冷却时间
+					continue;
+				}
+				
 				List<Grid> grids = ground.getBlocks();
 				int gridIndex = MapHelper.convertPixelToGridIndex(ai.getX(), ai.getY());
 
@@ -141,5 +159,43 @@ public class AiManager {
 		}
 		
 		return step;
+	}
+	
+	
+	/**
+	 * AI是否造成了伤害
+	 * @param aiTank
+	 * @return
+	 */
+	private boolean aiHurt(AiTank aiTank) {
+		boolean rValue = false;
+		Client c = ClientContainer.getInstance().getClient(aiTank.getAiTarget());
+		if(c != null) {
+			double distance = MapHelper.getDistanceBetweenTwoPoint(aiTank.getX(), aiTank.getY(), c.getX(), c.getY());
+			if(distance <= GameStatus.AI_HURT_DISTANCE.getValue()) {
+				boolean isAlive = c.beFire();
+				if(!isAlive) { //挂了,待完善
+					
+				}
+				rValue = true;
+			}
+		}
+		return rValue;
+	}
+	
+	/**
+	 * 造成AI伤害后推送信息
+	 * @param ai
+	 */
+	private void aiHurtPushMessage(AiTank ai) {
+			/** 推送攻击 **/			
+			ResAiHurtMessage res = new ResAiHurtMessage();
+			res.setSessionId(ai.getAiTarget());
+			res.setInfo(PromptInfo.AI_HURT.getPmt());
+			
+			for(Client c : ai.getMapGround().getClientInMap().values()) {
+				c.pushMessage(res);
+			}
+			logger.error("推送ai伤害完毕");
 	}
 }
