@@ -44,6 +44,7 @@ public class ASUtil {
 			/** 1找出当前节点周围可用的节点 **/
 			List<ASNode> temToOpenList = findNodeFromFourOriention(grids, source, target, cur, width, height);
 			
+			
 			/** 处理这个可走路径，待加入open和closelist中**/
 			for(ASNode node : temToOpenList) {
 				//1.如果不在closeMap中才考虑
@@ -56,7 +57,6 @@ public class ASUtil {
 					}else {
 						if(existInOpen.getgValue() >= node.getgValue()) {//比较G值
 							existInOpen.setgValue(node.getgValue());  	//把较小的G值给它
-							existInOpen.setParent(cur);						//设置父结点为当前
 						}
 					}
 				}
@@ -87,36 +87,37 @@ public class ASUtil {
 	private static List<ASNode> findNodeFromFourOriention(List<Grid> grids, Grid source, Grid target, ASNode cur, int width, int height){
 		List<ASNode> lists = new ArrayList<>(4);
 		Grid current = cur.getValue();
+		int parentGValue = cur.getParent() == null ? 0 : cur.getParent().getgValue();
 		/** 计算逻辑待完善 **/
 		/** 上 **/
 		if (current.getY() - 1 >= 0) { // 不越界
 			Grid next = grids.get(((current.getY() - 1) * width) + current.getX());
-			caculateFourOrientionRoad(lists, source, current, target, next);
+			caculateFourOrientionRoad(lists, parentGValue, current, target, next);
 		}
 		/** 下 **/
 		if (current.getY() + 1 < height) {
 			Grid next = grids.get(((current.getY() + 1) * width) + current.getX());
-			caculateFourOrientionRoad(lists, source, current, target, next);
+			caculateFourOrientionRoad(lists, parentGValue, current, target, next);
 		}
 		/** 左 **/
 		if (current.getX() - 1 >= 0) {
 			Grid next = grids.get(((current.getY()) * width) + current.getX() - 1);
-			caculateFourOrientionRoad(lists, source, current, target, next);
+			caculateFourOrientionRoad(lists, parentGValue, current, target, next);
 		}
 		/** 右 **/
 		if (current.getX() + 1 < width) {
 			Grid next = grids.get(((current.getY()) * width) + current.getX() + 1);
-			caculateFourOrientionRoad(lists, source, current, target, next);
+			caculateFourOrientionRoad(lists, parentGValue, current, target, next);
 		}
 
 		return lists;
 	}
 	
-	private static void caculateFourOrientionRoad(List<ASNode> lists, Grid startGrid,
+	private static void caculateFourOrientionRoad(List<ASNode> lists, int parentGValue,
 			Grid current, Grid target, Grid grid) {
 		if (grid.getStatus() == GridStatus.CAN_RUN.getStatus() || grid == target) { // 目标节点是否可行走不受影响
 			int hValue = Math.abs(target.getX() - grid.getX()) + Math.abs(target.getY() - grid.getY());
-			int gValue = Math.abs(startGrid.getX() - grid.getX()) + Math.abs(startGrid.getY() - grid.getY());
+			int gValue = parentGValue + 1;
 			ASNode tem = new ASNode(grid, gValue, hValue, null);
 			lists.add(tem);
 		}
