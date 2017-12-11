@@ -307,7 +307,7 @@ public class MapManager {
 			MapGround map = client.getMapGround();
 			int winSessionId = 0;
 			for(Client c : map.getClientInMap().values()) {
-				if(c.getSessionId() != client.getSessionId()) {
+				if(c.getSessionId() != client.getSessionId() && !(c instanceof AiTank)) {
 					winSessionId = c.getSessionId();
 				}
 			}

@@ -3,7 +3,7 @@ package cn.senninha.game.user.handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.senninha.game.map.manager.MapManager;
+import cn.senninha.game.GameStatus;
 import cn.senninha.game.user.UserManager;
 import cn.senninha.game.user.message.ReqHeartbeatMessge;
 import cn.senninha.game.user.message.ReqLoginMessage;
@@ -21,6 +21,9 @@ public class UserHandler {
 	
 	@MessageInvoke(cmd = CmdConstant.LOGIN_REQ)
 	public void login(int sessionId, BaseMessage message) {
+		Client client = ClientContainer.getInstance().getClient(sessionId);
+		//子弹射击的检测时间
+		client.setFireIntervel(GameStatus.GAEM_BULLETS_SHOT_INTERVAL.getValue());
 		logger.error("用户 {} 尝试登陆", message.toString());
 		UserManager.getInstance().login(sessionId, (ReqLoginMessage) message);	
 		
