@@ -248,7 +248,7 @@ public class Client {
 			mapGround.getBlocks().get(gridIndex).setStatus(GridStatus.HAS_PLAYER.getStatus());
 			mapGround.getBlocks().get(gridIndex).setSessionId(this.sessionId);
 			
-			logger.error("玩家{}进入地图成功", this);
+			logger.debug("玩家{}进入地图成功", this.getName());
 			return true;
 		}else {
 			logger.error("玩家{}进入地图失败", this);
@@ -340,7 +340,7 @@ public class Client {
 
 	@Override
 	public String toString() {
-		return "Client [logger=" + logger + ", sessionId=" + sessionId + ", name=" + name + ", line=" + line + ", ctx="
+		return "Client [sessionId=" + sessionId + ", name=" + name + ", line=" + line + ", ctx="
 				+ ctx + ", mapGround=" + mapGround + ", steps=" + steps + ", speed=" + speed + ", x=" + x + ", y=" + y
 				+ ", fireTime=" + fireTime + ", fireIntervel=" + fireIntervel + "]";
 	}

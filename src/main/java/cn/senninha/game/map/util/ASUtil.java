@@ -1,10 +1,11 @@
 package cn.senninha.game.map.util;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 import cn.senninha.game.map.Grid;
 import cn.senninha.game.map.GridStatus;
@@ -34,7 +35,7 @@ public class ASUtil {
 	 */
 	public static ASNode aStar(List<Grid> grids, Grid source, Grid target, int width, int height) {
 		ASNode cur = new ASNode(source, 0, 0, null);
-		List<ASNode> openList = new ArrayList<>();
+		Queue<ASNode> queue = new PriorityQueue<>();
 		Map<ASNode, ASNode> closeMap = new HashMap<>();
 		Map<ASNode, ASNode> openMap = new HashMap<>();
 		
@@ -53,10 +54,11 @@ public class ASUtil {
 					if(existInOpen == null) {					//不存在在openList里
 						node.setParent(cur);
 						//加入openList里
-						openList.add(node); openMap.put(node, node);
+						queue.add(node); openMap.put(node, node);
 					}else {
 						if(existInOpen.getgValue() >= node.getgValue()) {//比较G值
 							existInOpen.setgValue(node.getgValue());  	//把较小的G值给它
+							existInOpen.setParent(cur);
 						}
 					}
 				}
@@ -64,12 +66,12 @@ public class ASUtil {
 			}
 			
 			/** 排序，并且把**最小**的路径拿出来当作当前节点**/
-			Collections.sort(openList);
-			if(openList.size() == 0) {
+//			Collections.sort(queue);
+			if(queue.size() == 0) {
 				return null;
 			}
 			/** 移除openList **/
-			cur = openList.remove(0);
+			cur = queue.poll();
 			openMap.remove(cur);
 		}
 		

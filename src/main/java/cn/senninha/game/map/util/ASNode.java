@@ -55,10 +55,10 @@ public class ASNode implements Comparable<ASNode> {
 
 	@Override
 	public int compareTo(ASNode o) {
-		if (o.getgValue() + o.gethValue() > this.getgValue() + this.gethValue()) {
-			return -1;
-		} else {
+		if (o.getgValue() + o.gethValue() < this.getgValue() + this.gethValue()) {
 			return 1;
+		} else {
+			return -1;
 		}
 	}
 	
