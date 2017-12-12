@@ -10,8 +10,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.senninha.game.map.MapGround;
-import cn.senninha.game.map.message.ResMapResourceMessage;
 import cn.senninha.sserver.handler.EncodeHandler;
 import cn.senninha.sserver.lang.ClassFilter;
 import cn.senninha.sserver.lang.ClassUtil;
@@ -29,7 +27,6 @@ public class CodecFactory {
 	private Map<Integer, MessageWrapper> messageMap = new HashMap<Integer, MessageWrapper>();
 	@SuppressWarnings("rawtypes")
 	private Map<Class, Codec> codecMap = new HashMap<Class, Codec>();
-	private Codec codecWrapper;
 	
 	private static CodecFactory codecFactory;
 
