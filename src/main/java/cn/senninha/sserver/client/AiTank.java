@@ -5,7 +5,6 @@ import java.util.List;
 import cn.senninha.game.GameStatus;
 import cn.senninha.game.map.Grid;
 import cn.senninha.game.map.Steps;
-import cn.senninha.game.map.manager.MapHelper;
 import io.netty.channel.ChannelHandlerContext;
 
 /**

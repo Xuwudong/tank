@@ -3,7 +3,6 @@ package cn.senninha.game.map.message;
 import java.util.List;
 
 import cn.senninha.game.map.Grid;
-import cn.senninha.game.map.manager.MapHelper;
 import cn.senninha.sserver.CmdConstant;
 import cn.senninha.sserver.lang.message.BaseMessage;
 import cn.senninha.sserver.lang.message.Message;

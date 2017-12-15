@@ -14,7 +14,6 @@ import cn.senninha.sserver.lang.message.MessageWrapperAnnotation;
 @ClassType(clazz = List.class)
 public class ListCodec implements Codec {
 
-	@SuppressWarnings({"unchecked"})
 	@Override
 	public void decode(ByteBuffer buf, Object m, Field f) {
 		try {
@@ -24,7 +23,7 @@ public class ListCodec implements Codec {
 			int size = buf.getInt();
 			MessageWrapper mw = CodecFactory.getInstance().getMessageWrapper(cmd);
 			Class<?> clazz = mw.clazz;
-			List list = new ArrayList<>(size);
+			List<Object> list = new ArrayList<>(size);
 			f.set(m, list);
 			
 			// 解码对应的值并写入list里

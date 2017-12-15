@@ -9,7 +9,11 @@ import java.util.Queue;
 
 import cn.senninha.game.map.Grid;
 import cn.senninha.game.map.GridStatus;
-
+/**
+ * A*寻路工具
+ * @author senninha
+ *
+ */
 public class ASUtil {
 
 	public static void main(String[] args) {
