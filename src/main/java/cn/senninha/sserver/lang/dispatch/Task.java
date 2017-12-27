@@ -37,7 +37,7 @@ public class Task implements Delayed {
 	}
 
 	public void correctTime() {
-		this.executeTime = delay + unit.convert(System.currentTimeMillis(), TimeUnit.MILLISECONDS);
+		this.executeTime = unit.convert(delay, TimeUnit.MILLISECONDS) + unit.convert(System.currentTimeMillis(), TimeUnit.MILLISECONDS);
 		if (this.repeatTime != -1)
 			this.repeatTime--;
 	}

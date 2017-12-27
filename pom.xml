@@ -4,7 +4,8 @@
 
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-
+	<groupId>com.senninha</groupId>
+	<artifactId>tankserver</artifactId>
 	<name>tankserver</name>
 	<url>http://maven.apache.org</url>
 
@@ -50,6 +51,40 @@
 			<version>1.2.17</version>
 		</dependency>
 	</dependencies>
-	<groupId>com.senninha</groupId>
-	<artifactId>tankserver</artifactId>
+
+	<!--这个是为了改变编译方式，因为默认使用JDK1.3编译，不支持注解 -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>1.2.1</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>cn.senninha.sserver.ServerStart</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

@@ -69,8 +69,6 @@ public class ASUtil {
 				
 			}
 			
-			/** 排序，并且把**最小**的路径拿出来当作当前节点**/
-//			Collections.sort(queue);
 			if(queue.size() == 0) {
 				return null;
 			}
