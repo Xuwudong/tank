@@ -37,6 +37,8 @@ public interface CmdConstant {
 	public static final int RES_AI_HURT = 2009;
 	/** 被AI干掉 **/
 	public static final int RES_AI_DIE = 2010;
+	/** 击中Ai **/
+	public static final int RES_SHOT_AI = 2011;
 	
 	
 	

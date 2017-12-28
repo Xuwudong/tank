@@ -25,6 +25,7 @@ public class AiTank extends Client {
 		super(sessionId, name, ctx);
 		this.lastTargetGridIndex = -1;
 		isAi = true;
+		this.setFireIntervel(GameStatus.GAEM_BULLETS_SHOT_INTERVAL.getValue());
 	}
 
 	/**

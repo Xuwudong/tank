@@ -35,7 +35,16 @@ public class Client {
 	private long fireTime;
 	private int fireIntervel;
 	private int canBeFire;
+	private int direction;
 
+
+	public int getDirection() {
+		return direction;
+	}
+
+	public void setDirection(int direction) {
+		this.direction = direction;
+	}
 
 	/**
 	 * 是否还存活
@@ -214,6 +223,14 @@ public class Client {
 		this.mapGround = mapGround;
 		mapGround.getClientInMap().put(sessionId, this);
 		return true;
+	}
+	
+	/**
+	 * 加血
+	 * @param blood
+	 */
+	public void addLive(int blood) {
+		this.canBeFire++;
 	}
 	
 	/**

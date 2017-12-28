@@ -17,6 +17,7 @@ import cn.senninha.game.map.MapGround;
 import cn.senninha.game.map.Steps;
 import cn.senninha.game.map.manager.MapHelper;
 import cn.senninha.game.map.manager.MapManager;
+import cn.senninha.game.map.message.ReqShellsMessage;
 import cn.senninha.game.map.util.ASNode;
 import cn.senninha.game.map.util.ASUtil;
 import cn.senninha.sserver.client.AiTank;
@@ -60,6 +61,7 @@ public class AiManager {
 	public void check() {
 		for (MapGround ground : maps.values()) {
 			checkAI(ground);
+			aiShot(ground);
 		}
 	}
 
@@ -73,21 +75,21 @@ public class AiManager {
 			if (tem instanceof AiTank) { // 是AI
 				AiTank ai = (AiTank) tem;
 
-				boolean canHurt = ai.isCoolDown();
-				
-				if(!canHurt) {	//未冷却
-					continue;
-				}
-				
-				int isHrut = aiHurt(ai);
-				if(isHrut == 1) { //如果已经冷却并且造成了伤害
-					ai.clearAllSteps();
-					aiHurtPushMessage(ai);
-					ai.setCoolDown();	 //重新设置冷却时间
-					continue;
-				}else if(isHrut == 2){//已经死亡
-					break;
-				}
+//				boolean canHurt = ai.isCoolDown();
+//				
+//				if(!canHurt) {	//未冷却
+//					continue;
+//				}
+//				
+//				int isHrut = aiHurt(ai);
+//				if(isHrut == 1) { //如果已经冷却并且造成了伤害
+//					ai.clearAllSteps();
+//					aiHurtPushMessage(ai);
+//					ai.setCoolDown();	 //重新设置冷却时间
+//					continue;
+//				}else if(isHrut == 2){//已经死亡
+//					break;
+//				}
 				
 				List<Grid> grids = ground.getBlocks();
 				int gridIndex = MapHelper.convertPixelToGridIndex(ai.getX(), ai.getY());
@@ -114,6 +116,74 @@ public class AiManager {
 				ai.clearAllSteps();
 				ai.addSteps(steps);
 				logger.debug("ai{}追踪{}，寻路结果：{}", ai.getSessionId(), targetClient.getSessionId(), road.toString());
+			}
+		}
+	}
+	
+	/**
+	 * ai射击
+	 * @param ground
+	 */
+	private void aiShot(MapGround ground) {
+		for(Client client : ground.getClientInMap().values()) {
+			if(client instanceof AiTank) {
+				AiTank tank = (AiTank) client;
+				int x = tank.getX();			//像素
+				int y = tank.getY();
+				
+				int direction = tank.getDirection();
+				int gridIndex = MapHelper.convertPixelToGridIndex(x, y);
+				int[] indexIncrease = new int[] {-MapHelper.WIDTH_GRIDS, 1, MapHelper.WIDTH_GRIDS, -1};
+				int[] boundary = new int[] {0, (gridIndex / MapHelper.WIDTH_GRIDS + 1) * MapHelper.WIDTH_GRIDS, MapHelper.TOTAL_GRIDS, (gridIndex / MapHelper.WIDTH_GRIDS - 1) * MapHelper.WIDTH_GRIDS};
+				if(boundary[3] <= 0) {
+					boundary[3] = 0;
+				}
+				boolean stop = false;
+				
+				while(true) {
+					gridIndex = gridIndex + indexIncrease[direction];
+					switch(direction) {
+						case 0:
+							if(gridIndex < boundary[0]) {
+								stop = true;
+							}
+								break;
+							
+						case 1:
+							if(gridIndex >= boundary[1]) {
+								stop = true;
+							}
+							break;
+						case 2:
+							if(gridIndex >= boundary[2]) {
+								stop = true;
+							}
+							break;
+						case 3:
+							if(gridIndex < boundary[3]) {
+								stop = true;
+							}
+							break;
+					}
+					
+					if(stop) {
+						break;
+					}
+					
+					int targetSessionId = ground.getBlocks().get(gridIndex).getSessionId();
+					Client target = ClientContainer.getInstance().getClient(targetSessionId);
+					if(target != null) {//射击
+						long cur = System.currentTimeMillis();
+						if (cur - tank.getFireTime() >= tank.getFireIntervel()) {
+							tank.setFireTime(cur);
+							ground.addBullets(ReqShellsMessage.valueOf(tank),
+									GameStatus.GAME_COMMON_BULLET_SPEED.getValue() / 2);
+							logger.debug("ai射击完毕:{}", tank.getSessionId());
+						}
+						return;
+					}
+							
+				}
 			}
 		}
 	}

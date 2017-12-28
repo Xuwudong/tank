@@ -1,6 +1,7 @@
 package cn.senninha.game.map.message;
 
 import cn.senninha.sserver.CmdConstant;
+import cn.senninha.sserver.client.AiTank;
 import cn.senninha.sserver.lang.message.BaseMessage;
 import cn.senninha.sserver.lang.message.Message;
 
@@ -10,6 +11,16 @@ public class ReqShellsMessage extends BaseMessage {
 	private int x;
 	private int y;
 	private byte direction;
+	
+	
+	public static ReqShellsMessage valueOf(AiTank tank) {
+		ReqShellsMessage req = new ReqShellsMessage();
+		req.setSourceSessionId(tank.getSessionId());
+		req.setDirection((byte)tank.getDirection());
+		req.setX(tank.getX());
+		req.setY(tank.getY());
+		return req;
+	}
 	public int getSourceSessionId() {
 		return sourceSessionId;
 	}

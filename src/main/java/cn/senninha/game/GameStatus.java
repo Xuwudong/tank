@@ -13,7 +13,7 @@ public enum GameStatus {
 	GAME_BULLETS_CHECK_INTERVEL(50),
 	
 	/** 用户射击冷却时间 **/
-	GAEM_BULLETS_SHOT_INTERVAL(500),
+	GAEM_BULLETS_SHOT_INTERVAL(1000),
 	
 	/** AI检测任务 **/
 	GAME_AI_CHECK_INTERVAL(100),

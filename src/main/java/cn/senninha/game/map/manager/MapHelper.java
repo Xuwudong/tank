@@ -136,6 +136,7 @@ public class MapHelper {
 			if(client instanceof AiTank) {
 				res.setIsAI((byte)1); //AI坦克标志
 			}
+			client.setDirection(res.getDirection());
 			return res;
 		}else {	//如果不能走动，移除全部走动
 			client.clearAllSteps();

@@ -16,6 +16,7 @@ import cn.senninha.game.map.match.message.ResBattleResultMessage;
 import cn.senninha.game.map.match.message.ResHitMessage;
 import cn.senninha.game.map.message.ResBulletMessage;
 import cn.senninha.game.map.message.ResMapResourceMessage;
+import cn.senninha.game.map.message.ResShotAiMessage;
 import cn.senninha.sserver.client.AiTank;
 import cn.senninha.sserver.client.Client;
 import cn.senninha.sserver.client.ClientContainer;
@@ -236,17 +237,38 @@ public class MapManager {
 		int sessionId = bulletsObject.getMapGround().getBlocks().get(shotGrid).getSessionId();
 		Client client = ClientContainer.getInstance().getClient(sessionId);
 		boolean isGameOver = false;
-		if(client.beFire()) {
-			//还活着
-			logger.debug("{}挨了一枪，还活着", client.getName());
-			ResHitMessage res = new ResHitMessage(sourceId, sessionId, client.getCanBeFire());
-			bulletsObject.getMapGround().pushMessageInGround(res);
-		}else {
-			//gg了
-			ResBattleResultMessage res = new ResBattleResultMessage(sourceId, sessionId, client.getName());
-			bulletsObject.getMapGround().pushMessageInGround(res);
-			logger.debug("{}挨了一枪后，gg了", client.getName());
-			isGameOver = true;
+		if (client != null) {// 被击中的是对方敌人
+			if (client.beFire()) {
+				// 还活着
+				logger.debug("{}挨了一枪，还活着", client.getName());
+				ResHitMessage res = new ResHitMessage(sourceId, sessionId, client.getCanBeFire());
+				bulletsObject.getMapGround().pushMessageInGround(res);
+			} else {
+				// gg了
+				ResBattleResultMessage res = new ResBattleResultMessage(sourceId, sessionId, client.getName());
+				bulletsObject.getMapGround().pushMessageInGround(res);
+				logger.debug("{}挨了一枪后，gg了", client.getName());
+				isGameOver = true;
+			}
+		} else {// 击中了npc
+			Client sourceClient = ClientContainer.getInstance().getClient(sourceId);
+			if(sourceClient == null) {//射击源头是npc，不处理
+				
+			}else {					  //射击源头是战斗人员
+				Client targetAi = bulletsObject.getMapGround().getClientInMap().get(sessionId);
+				if(targetAi instanceof AiTank) {
+					AiTank ai = (AiTank) targetAi;
+					ai.setAiTarget(sourceId);	//设置仇视对象
+					sourceClient.addLive(1);    //加血
+					
+					//推送ai被击中
+					ResShotAiMessage res = ResShotAiMessage.valueOf(sourceClient.getCanBeFire(), sourceId);
+					for(Client c : bulletsObject.getMapGround().getClientInMap().values()) {
+						c.pushMessage(res);
+					}
+						
+				}
+			}
 		}
 		
 		/** 从地图中移除这个子弹 **/
@@ -260,15 +282,15 @@ public class MapManager {
 	 * @param bullet
 	 * @return
 	 */
-	public int shoot(BulletsObject bullet, int curGrid) {
+	private int shoot(BulletsObject bullet, int curGrid) {
 		int sessionId = 0;
 		Grid grid = bullet.getMapGround().getBlocks().get(curGrid);
 		if(grid.getSessionId() != 0) {
 			Client client = bullet.getMapGround().getClientInMap().get(grid.getSessionId());
 			if(client != null &&client.getSessionId() != bullet.getSourceSessionId()) {
-				if(client instanceof AiTank) {//射中了坦克，等于射中阻挡
-					return -1;
-				}
+//				if(client instanceof AiTank) {//射中了坦克，等于射中阻挡
+//					return -1;
+//				}
 				logger.debug("{}被击中了：", client.getName());
 				sessionId = grid.getSessionId();
 			}
